@@ -2,9 +2,7 @@ from flask import Flask
 
 app = Flask(__name__)
 
-@app.route('/')
-def home():
-    return "<h1>Site do Instituto IBK</h1><p>O container Docker está funcionando!</p>"
+from app import views
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(debug=True, host="0.0.0.0")
