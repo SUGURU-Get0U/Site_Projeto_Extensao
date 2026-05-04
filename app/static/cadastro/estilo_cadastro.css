@@ -110,7 +110,7 @@ input, button, textarea, select { /* para garantir q n tenha problema com a font
     background-color: var(--BackGround1);
 
     /* background foto */
-    background-image: linear-gradient(rgba(219, 219, 219, 0.93213)), url("/home/clas/Projects/WEB/IMAGENS/fundo_container1.jpg");
+    background-image: linear-gradient(rgba(219, 219, 219, 0.93213)), url("../../public/fundo_container1.jpg");
     
     background-size: cover;
     background-position: center;
