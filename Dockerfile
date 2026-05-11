@@ -43,4 +43,4 @@ COPY . .
 EXPOSE 5000
 
 # 9. Comando para iniciar a aplicação
-CMD ["flask", "--app", "app.app", "run", "--host=0.0.0.0"]
+CMD ["flask", "--app", "app.app", "run", "--host=0.0.0.0", "--debug"]

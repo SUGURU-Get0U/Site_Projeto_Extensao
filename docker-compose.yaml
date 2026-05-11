@@ -1,0 +1,11 @@
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app   # raiz do projeto → /projeto no container
+    working_dir: /app
+    environment:
+      - FLASK_ENV=development
+    command: flask --app app.app run --host=0.0.0.0 --debug
