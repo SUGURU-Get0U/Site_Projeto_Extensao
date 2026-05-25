@@ -4,11 +4,11 @@ from flask import render_template
 
 @app.route('/')
 def cadastro():
-    return render_template("cadastro/cadastro.html")
-
-@app.route('/index')
-def index():
     return render_template("index/index.html")
+
+@app.route('/cadastro')
+def index():
+    return render_template("cadastro/cadastro.html")
 
 @app.route('/login')
 def login():
