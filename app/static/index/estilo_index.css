@@ -4,7 +4,7 @@
     --VerdeTerciario: #F3F4F6;
     --BackGround1: #FFFFFF;
     --BackGround2: rgb(219, 219, 219);
-    --Menu: #e0e0e0;
+    --Menu: #ffffff;
     --Cinza: #959595;
     --fonte_principal: 'Lato', sans-serif;
 }
@@ -135,7 +135,7 @@ input, button, textarea, select { /* para garantir q n tenha problema com a font
 
 #Container2 {
     width: 100vw;
-    height: 30vh;
+    height: 100vh;
     background-color: var(--BackGround2);
     display: flex;
     flex-direction: column;
@@ -145,7 +145,7 @@ input, button, textarea, select { /* para garantir q n tenha problema com a font
 
 #Container3 {
     width: 100vw;
-    height: 30vh;
+    height: 50vh;
     background-color: var(--BackGround2);
     display: flex;
     flex-direction: column;
@@ -157,6 +157,8 @@ input, button, textarea, select { /* para garantir q n tenha problema com a font
 #TituloSecundario {
     color: var(--VerdePrincipal);
     font-size: 5vh;
+    margin-bottom: 2%;
+    margin-top: 2%;
 }
 
 #TextoDeExplicacao {
@@ -166,6 +168,10 @@ input, button, textarea, select { /* para garantir q n tenha problema com a font
     max-width: 80%;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    margin-bottom: 2%;
+    line-height: 1.5;
+    text-align: justify;
+    text-indent: 5%;
 }
 
 footer {

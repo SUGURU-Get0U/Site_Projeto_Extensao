@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard — X Frágil</title>
+    <link rel="stylesheet" href="../../static/Abas_internas/menu_interno.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet" />
+    <script src="#" defer></script>
+  </head>
+  <body>
+
+    <!-- ============================================================
+         CABEÇALHO
+    ============================================================ -->
+    <header id="cabecalho">
+      <div id="cabeçalho-esquerdo">
+        <button id="botao-menu">
+          <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+        </button>
+        <h1 id="titulo-sistema">
+          SXF Sistema
+          <span class="subtag">Síndrome do X Frágil</span>
+        </h1>
+      </div>
+      <div id="cabeçalho-direito">
+        <button id="botao-notificacao" title="Notificações">
+          <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+          <span id="notificacao-dot"></span>
+        </button>
+        <div id="usuario-cabecalho">
+          <div id="usuario-info">
+            <div id="usuario-nome"><p>Nome do usuario</p></div>
+            <div id="usuario-cargo"><p>Cargo do usuario</p></div>
+          </div>
+          <div id="usuario-avatar"><p>Foto de perfil</p></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============================================================
+         PAGE HEADER
+    ============================================================ -->
+    <div id="page-header">
+      <div id="page-header-texto">
+        <div id="page-header-titulo"><p>Bem-vindo "NOME"!</p></div>
+        <div id="page-header-sub"><p>data atual</p></div>
+      </div>
+      <div id="page-header-acoes">
+        <a href="pacientes.html" class="botao botao_secundario">
+          <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          Ver Pacientes
+        </a>
+        <button class="botao botao_primario" id="botao-abrir-calculadora">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+          Novo Cálculo
+        </button>
+      </div>
+    </div>
+<div id="container-geral">
+    <!-- ============================================================
+         ACESSO RÁPIDO — ROW logo após o header
+    ============================================================ -->
+    <div id="acesso-rapido">
+      <span id="acesso-rapido-label">Acesso rápido</span>
+
+      <a href="pacientes.html" class="ac-botao" id="ac-pacientes">
+        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        Lista de Pacientes
+      </a>
+
+      <a href="#" class="ac-botao" id="ac-calculadora">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+        Calculadora de Risco
+      </a>
+
+      <a href="#" class="ac-botao" id="ac-laudo">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+        Gerar Laudo
+      </a>
+
+      <a href="#" class="ac-botao" id="ac-agenda">
+        <svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+        Agendar Exame
+      </a>
+
+      <a href="#" class="ac-botao" id="ac-relatorios">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+        Relatórios
+      </a>
+    </div>
+
+    <!-- ============================================================
+         EeestatususÍSTICAS
+    ============================================================ -->
+    <div id="estatus">
+      <!-- JS preenche os valores via SQL -->
+      <div class="estatus-card" id="estatus-total-pacientes">
+        <div class="estatus-icone ico-azul">
+          <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        </div>
+        <div>
+          <div class="estatus-valor" id="estatus-total-valor">—</div>
+          <div class="estatus-label">Total de Pacientes</div>
+          <div class="estatus-var" id="estatus-total-var"></div>
+        </div>
+      </div>
+
+      <div class="estatus-card" id="estatus-exames-pendentes">
+        <div class="estatus-icone ico-amarelo">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 12 2zm.5 15H11v-6h1.5v6zm0-8H11V7h1.5v2z"/></svg>
+        </div>
+        <div>
+          <div class="estatus-valor" id="estatus-exames-valor" style="color:#D97706;">—</div>
+          <div class="estatus-label">Exames Pendentes</div>
+          <div class="estatus-var" id="estatus-exames-var"></div>
+        </div>
+      </div>
+
+      <div class="estatus-card" id="estatus-risco-alto">
+        <div class="estatus-icone ico-vermelho">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        </div>
+        <div>
+          <div class="estatus-valor" id="estatus-alto-valor" style="color:#DC2626;">—</div>
+          <div class="estatus-label">Risco Alto Confirmado</div>
+          <div class="estatus-var" id="estatus-alto-var"></div>
+        </div>
+      </div>
+
+      <div class="estatus-card" id="estatus-avaliacoes-concluidas">
+        <div class="estatus-icone ico-verde">
+          <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        </div>
+        <div>
+          <div class="estatus-valor" id="estatus-aval-valor" style="color:#059669;">—</div>
+          <div class="estatus-label">Avaliações Concluídas</div>
+          <div class="estatus-var" id="estatus-aval-var"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         SEÇÃO PRINCIPAL — ROW: atividade | próximos exames
+    ============================================================ -->
+    <div id="secao-principal">
+
+      <!-- Atividade Recente -->
+      <div id="container-atividade">
+        <div id="atividade-header">
+          <div>
+            <div id="atividade-titulo">Atividade Recente</div>
+            <div id="atividade-sub">Últimas ações registradas no sistema</div>
+          </div>
+          <a href="#" class="botao botao-ghost" style="font-size:.72rem;padding:5px 10px;">Ver todas</a>
+        </div>
+        <!-- JS insere .ativ-item aqui via SQL -->
+        <div id="atividade-lista"></div>
+      </div>
+
+      <!-- Próximos Exames -->
+      <div id="container-proximos-exames">
+        <div id="proximos-exames-header">
+          <div>
+            <div id="proximos-exames-titulo">Próximos Exames</div>
+            <div id="proximos-exames-sub">Agendamentos dos próximos 7 dias</div>
+          </div>
+          <a href="#" class="botao botao-ghost" style="font-size:.72rem;padding:5px 10px;">Agenda</a>
+        </div>
+        <!-- JS insere .exame-item aqui via SQL -->
+        <div id="proximos-exames-lista"></div>
+      </div>
+</div>
+    </div>
+    <footer>
+      <p>SXF Sistema Hospitalar</p>
+    </footer>
+  </body>
+</html>
