@@ -23,3 +23,6 @@ def saiba_mais():
 @app.route('/login2')
 def login2():
     return render_template("login/login2.html")
+@app.route('/interno')
+def login2():
+    return render_template("Abas_internas/menu_interno.html")
