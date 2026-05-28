@@ -1,5 +1,6 @@
 from app.app import app
-from flask import render_template
+from flask import render_template, send_file
+import os
 
 
 @app.route('/')
@@ -20,9 +21,11 @@ def sobre_nos():
 @app.route('/saiba-mais')
 def saiba_mais():
     return render_template("Abas_Extras/Saiba_mais.html")
+
 @app.route('/login2')
 def login2():
     return render_template("login/login2.html")
+
 @app.route('/interno')
-def login2():
+def interno():
     return render_template("Abas_internas/menu_interno.html")

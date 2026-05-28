@@ -112,12 +112,6 @@ select {
   width: 100vw;
   height: 165vh;
   background-color: var(--BackGround1);
-
-  /* background foto */
-  background-image:
-    linear-gradient(rgba(219, 219, 219, 0.93213)),
-    url("../../public/fundo_container1.jpg");
-
   background-size: cover;
   background-position: center;
 }
