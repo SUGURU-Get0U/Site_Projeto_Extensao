@@ -4,8 +4,36 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - .:/app   # raiz do projeto → /projeto no container
+      - .:/app
     working_dir: /app
     environment:
       - FLASK_ENV=development
+      # Flask needs this to know where the database is
+      - DATABASE_URL=postgresql://buko_admin:buko_password@db:5432/sxf_checklist
     command: flask --app app.app run --host=0.0.0.0 --debug
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=buko_admin
+      - POSTGRES_PASSWORD=buko_password
+      - POSTGRES_DB=sxf_checklist
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Make sure sxf_checklist.sql is in the same folder as docker-compose.yaml
+      - ./sxf_checklist.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+  cloudbeaver:
+    image: dbeaver/cloudbeaver:latest
+    ports:
+      - "8080:8978"
+    depends_on:
+      - db
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
