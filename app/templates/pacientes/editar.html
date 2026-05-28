@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block titulo %}Editar — {{ paciente.nome_completo }}{% endblock %}
+{% block scripts %}
+<link rel="stylesheet" href="{{ url_for('static', filename='avaliacao/estilo_avaliacao.css') }}" />
+{% endblock %}
+
+{% block conteudo %}
+<main id="ConteudoAvaliacao">
+  <h1>Editar Paciente</h1>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      <div class="resumo {{ 'ok' if cat == 'ok' else 'alerta' }}">{{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  <form method="POST" class="form-paciente">
+    <div class="campo">
+      <label>Nome completo *</label>
+      <input type="text" name="nome_completo" value="{{ paciente.nome_completo }}" required />
+    </div>
+    <div class="campo">
+      <label>Data de nascimento *</label>
+      <input type="date" name="data_nascimento"
+             value="{{ paciente.data_nascimento.strftime('%Y-%m-%d') }}" required />
+    </div>
+    <div class="campo">
+      <label>Sexo *</label>
+      <select name="genero">
+        <option value="M" {{ "selected" if paciente.genero == "M" }}>Masculino</option>
+        <option value="F" {{ "selected" if paciente.genero == "F" }}>Feminino</option>
+      </select>
+    </div>
+    <div class="campo">
+      <label>CPF</label>
+      <input type="text" name="cpf" value="{{ paciente.cpf or '' }}" />
+    </div>
+    <div class="campo">
+      <label>Nome do responsável</label>
+      <input type="text" name="nome_responsavel" value="{{ paciente.nome_responsavel or '' }}" />
+    </div>
+    <div class="campo">
+      <label>Telefone do responsável</label>
+      <input type="text" name="telefone_responsavel" value="{{ paciente.telefone_responsavel or '' }}" />
+    </div>
+    <div class="campo">
+      <label>E-mail do responsável</label>
+      <input type="email" name="email_responsavel" value="{{ paciente.email_responsavel or '' }}" />
+    </div>
+    <div class="campo">
+      <label>Observações clínicas</label>
+      <textarea name="observacoes" rows="4">{{ paciente.observacoes or '' }}</textarea>
+    </div>
+    <button type="submit" class="btn-calcular">Salvar alterações</button>
+    &nbsp;<a href="{{ url_for('paciente_detalhe', paciente_id=paciente.id) }}">Cancelar</a>
+  </form>
+</main>
+{% endblock %}
