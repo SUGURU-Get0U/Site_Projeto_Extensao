@@ -1,145 +1,73 @@
-while True:
-    genero = input("Digite o gênero (M/F): ").upper()
+"""Checklist de triagem da Síndrome do X Frágil.
 
-    if genero == "M":
-        homem = True
-    elif genero == "F":
-        homem = False
-    else:
-        print("Gênero inválido. Por favor, digite 'M' para masculino ou 'F' para feminino.")
+Pesos e limiares derivados do Random Forest do artigo de Herai/Romero
+(coorte IBK 2018-2023, 419 indivíduos com mutação completa).
+Score = Σ(Peso_j × X_ij), com X_ij ∈ {0, 1}.
+"""
 
-    sintomas = {
-        1: {
-            "nome": "Deficiência intelectual",
-            "homem": 0.32,
-            "mulher": 0.20
-        },
+SINTOMAS = {
+    1:  {"nome": "Deficiência intelectual",       "homem": 0.32, "mulher": 0.20},
+    2:  {"nome": "Face alongada/orelhas",         "homem": 0.29, "mulher": 0.09},
+    3:  {"nome": "Macroorquidismo",               "homem": 0.26, "mulher": None},
+    4:  {"nome": "Hipermobilidade articular",     "homem": 0.19, "mulher": 0.04},
+    5:  {"nome": "Dificuldades de aprendizagem",  "homem": 0.18, "mulher": 0.28},
+    6:  {"nome": "Déficit de atenção",            "homem": 0.17, "mulher": 0.12},
+    7:  {"nome": "Movimentos repetitivos",        "homem": 0.17, "mulher": 0.05},
+    8:  {"nome": "Atraso na fala",                "homem": 0.14, "mulher": 0.01},
+    9:  {"nome": "Hiperatividade",                "homem": 0.12, "mulher": 0.04},
+    10: {"nome": "Evita contato visual",          "homem": 0.06, "mulher": 0.08},
+    11: {"nome": "Evita contato físico",          "homem": 0.04, "mulher": 0.07},
+    12: {"nome": "Agressividade",                 "homem": 0.01, "mulher": 0.02},
+}
 
-        2: {
-            "nome": "Face alongada/orelhas",
-            "homem": 0.29,
-            "mulher": 0.09
-        },
+LIMIAR = {"homem": 0.56, "mulher": 0.55}
 
-        3: {
-            "nome": "Macroorquidismo",
-            "homem": 0.26,
-            "mulher": None
-        },
 
-        4: {
-            "nome": "Hipermobilidade articular",
-            "homem": 0.19,
-            "mulher": 0.04
-        },
-
-        5: {
-            "nome": "Dificuldades de aprendizagem",
-            "homem": 0.18,
-            "mulher": 0.28
-        },
-
-        6: {
-            "nome": "Déficit de atenção",
-            "homem": 0.17,
-            "mulher": 0.12
-        },
-
-        7: {
-            "nome": "Movimentos repetitivos",
-            "homem": 0.17,
-            "mulher": 0.05
-        },
-
-        8: {
-            "nome": "Atraso na fala",
-            "homem": 0.14,
-            "mulher": 0.01
-        },
-
-        9: {
-            "nome": "Hiperatividade",
-            "homem": 0.12,
-            "mulher": 0.04
-        },
-
-        10: {
-            "nome": "Evita contato visual",
-            "homem": 0.06,
-            "mulher": 0.08
-        },
-
-        11: {
-            "nome": "Evita contato físico",
-            "homem": 0.04,
-            "mulher": 0.07
-        },
-
-        12: {
-            "nome": "Agressividade",
-            "homem": 0.01,
-            "mulher": 0.02
-        }
+def sintomas_para_genero(genero: str):
+    """Devolve os sintomas aplicáveis ao gênero (omite peso None)."""
+    if genero not in ("homem", "mulher"):
+        raise ValueError("genero deve ser 'homem' ou 'mulher'")
+    return {
+        id_: {"nome": s["nome"], "peso": s[genero]}
+        for id_, s in SINTOMAS.items()
+        if s[genero] is not None
     }
 
-    def fórmula_Score(score, GENERO):
-        try:
-            resposta = int(input("\nDigite o número do sintoma que você apresenta (ou 0 para finalizar): "))
-            if resposta == 0:
-                return score, True
-            
-            elif resposta == 3 and GENERO == "mulher":
-                print("O sintoma 'Macroorquidismo' não é aplicável para mulheres. Por favor, escolha outro sintoma.")
-                return score, False
 
-            elif resposta in sintomas:
-                score += sintomas[resposta][GENERO]
-                return score, False
-            
-            else:
-                print("Número de sintoma inválido. Por favor, tente novamente.")
-                return score, False
-        except ValueError:
-                print("Entrada inválida. Por favor, digite um número.")
-                return score, False
+def calcular_score(genero: str, sintomas_marcados):
+    """Calcula o score e a recomendação de encaminhamento.
 
-    def calcular_Score():
-        x = ("-" * 55)
-        score = 0.0
+    Args:
+        genero: "homem" ou "mulher".
+        sintomas_marcados: iterável com os IDs dos sintomas presentes.
 
-        if homem:
-            GENERO = "homem"
-            limite = 0.56
+    Returns:
+        dict com score, limiar, encaminhar (bool) e detalhamento.
+    """
+    if genero not in ("homem", "mulher"):
+        raise ValueError("genero deve ser 'homem' ou 'mulher'")
 
-            print("\n\nSintomas para homens:\n")
-            print(x)
-            for id, dados in sintomas.items():
-                print(f"{id:<3} | {dados['nome']:<40} | {dados['homem']}")
-                print(x)
-            
-            Finish = False
-            while not Finish:
-                score, Finish = fórmula_Score(score, GENERO)
-            
-        else:
-            GENERO = "mulher"
-            limite = 0.55
+    marcados = {int(i) for i in sintomas_marcados}
+    detalhes = []
+    score = 0.0
 
-            print("\n\nSintomas para mulher:\n")
-            print(x)
-            for id, dados in sintomas.items():
-                print(f"{id:<3} | {dados['nome']:<40} | {dados['mulher']}")
-                print(x)
-            Finish = False
-            while not Finish:
-                score, Finish = fórmula_Score(score, GENERO)
+    for id_, dados in SINTOMAS.items():
+        peso = dados[genero]
+        presente = id_ in marcados and peso is not None
+        if presente:
+            score += peso
+        detalhes.append({
+            "id": id_,
+            "nome": dados["nome"],
+            "peso": peso,
+            "presente": presente,
+        })
 
-        print(f"\nSeu score é: {score:.2f}")
-        if score >= limite:
-            print("O resultado sugere a possibilidade de Síndrome de X Frágil. Recomenda-se procurar um profissional de saúde para uma avaliação mais detalhada.")
-
-    calcular_Score()
-
-    fim = input("Finalizar programa? aperte 0 novamente: ")
-    if fim == "0":
-        break
+    limiar = LIMIAR[genero]
+    return {
+        "score": round(score, 2),
+        "limiar": limiar,
+        "encaminhar": score >= limiar,
+        "genero": genero,
+        "detalhes": detalhes,
+    }

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block titulo %}{{ "Editar" if usuario else "Novo" }} Usuário{% endblock %}
+{% block scripts %}
+<link rel="stylesheet" href="{{ url_for('static', filename='avaliacao/estilo_avaliacao.css') }}" />
+{% endblock %}
+
+{% block conteudo %}
+<main id="ConteudoAvaliacao">
+  <h1>{{ "Editar Usuário" if usuario else "Novo Usuário" }}</h1>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      <div class="resumo {{ 'ok' if cat == 'ok' else 'alerta' }}">{{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  <form method="POST" class="form-paciente">
+    <div class="campo">
+      <label for="nome_completo">Nome completo *</label>
+      <input type="text" id="nome_completo" name="nome_completo"
+             value="{{ usuario.nome_completo if usuario else '' }}" required />
+    </div>
+
+    {% if not usuario %}
+    <div class="campo">
+      <label for="email">E-mail *</label>
+      <input type="email" id="email" name="email" required />
+    </div>
+    {% else %}
+    <p><strong>E-mail:</strong> {{ usuario.email }}</p>
+    {% endif %}
+
+    <div class="campo">
+      <label for="senha">{{ "Nova senha (deixe em branco para manter)" if usuario else "Senha *" }}</label>
+      <input type="password" id="senha" name="senha" {{ "required" if not usuario else "" }} />
+    </div>
+
+    <div class="campo">
+      <label for="role_id">Papel *</label>
+      <select id="role_id" name="role_id">
+        {% for r in roles %}
+        <option value="{{ r.id }}" {{ "selected" if usuario and usuario.role_id == r.id }}>
+          {{ r.nome }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    {% if usuario %}
+    <div class="campo" style="flex-direction:row;align-items:center;gap:8px">
+      <input type="checkbox" id="ativo" name="ativo" {{ "checked" if usuario.ativo }} />
+      <label for="ativo" style="margin:0">Usuário ativo</label>
+    </div>
+    {% endif %}
+
+    <button type="submit" class="btn-calcular">Salvar</button>
+    &nbsp;<a href="{{ url_for('admin.usuarios_lista') }}">Cancelar</a>
+  </form>
+</main>
+{% endblock %}

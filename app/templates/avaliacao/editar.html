@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block titulo %}Editar Avaliação #{{ avaliacao.id }}{% endblock %}
+{% block scripts %}
+<link rel="stylesheet" href="{{ url_for('static', filename='avaliacao/estilo_avaliacao.css') }}" />
+{% endblock %}
+
+{% block conteudo %}
+<main id="ConteudoAvaliacao">
+  <h1>Editar Avaliação #{{ avaliacao.id }}</h1>
+
+  <section class="resumo ok">
+    <p>
+      <strong>Paciente:</strong> {{ paciente.nome_completo }}
+      ({{ paciente.genero_extenso }}, {{ paciente.idade }} anos)
+    </p>
+    <p><strong>Realizada em:</strong> {{ avaliacao.realizada_em.strftime('%d/%m/%Y %H:%M') }}</p>
+  </section>
+
+  <form method="POST" id="FormAvaliacao">
+    <table class="tabela-sintomas">
+      <thead>
+        <tr><th>Presente?</th><th>Sintoma</th></tr>
+      </thead>
+      <tbody>
+        {% for s in sintomas %}
+        <tr>
+          <td>
+            <input type="checkbox" name="sintoma" value="{{ s.id }}" id="s_{{ s.id }}"
+                   {{ "checked" if s.id in marcados_ids }} />
+          </td>
+          <td><label for="s_{{ s.id }}">{{ s.nome }}</label></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="campo">
+      <label for="observacoes">Observações</label>
+      <textarea id="observacoes" name="observacoes" rows="3">{{ avaliacao.observacoes or '' }}</textarea>
+    </div>
+
+    <button type="submit" class="btn-calcular">Salvar alterações</button>
+    &nbsp;<a href="{{ url_for('avaliacao_resultado', avaliacao_id=avaliacao.id) }}">Cancelar</a>
+  </form>
+</main>
+{% endblock %}
