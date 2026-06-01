@@ -2,25 +2,26 @@
     --VerdePrincipal: #2A7FFF;
     --VerdeSecundario: #1E3A8A;
     --VerdeTerciario: #F3F4F6;
-    --BackGround1: #ffffff;
+    --BackGround1: #FFFFFF;
     --BackGround2: rgb(219, 219, 219);
-    --Menu: #ffffff;
+    --Menu: #e0e0e0;
     --Cinza: #959595;
     --fonte_principal: 'Lato', sans-serif;
 }
 
-*{
+* {
     margin: 0;
     padding: 0;
     font-family: var(--fonte_principal);
+    box-sizing: border-box;
 }
 
 body {
     background-color: var(--VerdeSecundario);
 }
 
-input, button, textarea, select { /* para garantir q n tenha problema com a fonte */
-    font-family: inherit;
+input, button, textarea, select {
+    font-family: var(--fonte_principal);
 }
 
 #Cabeçalho {
@@ -32,6 +33,10 @@ input, button, textarea, select { /* para garantir q n tenha problema com a font
     padding-left: 2%;
     height: 7vh;
     gap: 3%;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 #BotaoMenu {
@@ -41,6 +46,11 @@ input, button, textarea, select { /* para garantir q n tenha problema com a font
     margin-left: 10px;
     cursor: pointer;
     fill: var(--Menu);
+    transition: opacity 0.2s;
+}
+
+#BotaoMenu:hover {
+    opacity: 0.75;
 }
 
 #CabeçalhoTitulo {
@@ -48,12 +58,13 @@ input, button, textarea, select { /* para garantir q n tenha problema com a font
     font-size: 4vh;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    letter-spacing: 0.08em;
 }
 
 #Barra_lateral {
     position: fixed;
     top: 0;
-    left: -30vh; /* escondido */
+    left: -30vh;
     width: 20vh;
     height: 100vh;
     background: var(--Menu);
@@ -62,9 +73,9 @@ input, button, textarea, select { /* para garantir q n tenha problema com a font
     padding-top: 1%;
     transition: 0.3s;
     border-right: var(--VerdePrincipal) solid 2px;
+    z-index: 200;
 }
 
-/* quando abrir */
 #Barra_lateral.Ativo {
     left: 0;
 }
@@ -101,73 +112,94 @@ input, button, textarea, select { /* para garantir q n tenha problema com a font
 }
 
 #Container1 {
-    width: 100vw;
-    height: 85vh;
-    background-color: var(--BackGround1);
+    background: linear-gradient(to bottom, var(--VerdePrincipal) 10%, var(--VerdeSecundario) 90%);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-size: cover;
-    background-position: center;
+    text-align: center;
+    padding: 8vh 10vw 6vh;
+    min-height: 90vh;
+    position: relative;
+    overflow: hidden;
+}
+
+#Container1::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: var(--VerdePrincipal);
 }
 
 #TituloPrincipal {
-    color: var(--VerdePrincipal);
-    font-size: 8vh;
+    color: #FFFFFF;
+    font-size: clamp(1.8rem, 4vw, 3.2rem);
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    margin-bottom: 1.5vh;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.3);
 }
 
 #SubtituloPrincipal {
-    color: var(--VerdeSecundario);
-    font-size: 5vh;
-    margin-top: 2%;
+    color: var(--Menu);
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    opacity: 0.9;
 }
 
 #Espaçamento {
-    width: 100vw;
-    height: 25vh;
-    background-color: var(--VerdeSecundario);
+    height: 6vh;
+    background-color: var(--BackGround1);
+}
+
+#Container2,
+#Container3 {
+    background-color: var(--BackGround1);
+    padding: 5vh 10vw;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 #Container2 {
-    width: 100vw;
-    height: 100vh;
-    background-color: var(--BackGround2);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    border-bottom: 1px solid var(--BackGround2);
 }
 
 #Container3 {
-    width: 100vw;
-    height: 50vh;
-    background-color: var(--BackGround2);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding-bottom: 5%;
+    background-color: var(--VerdeTerciario);
 }
 
 #TituloSecundario {
-    color: var(--VerdePrincipal);
-    font-size: 5vh;
-    margin-bottom: 2%;
-    margin-top: 2%;
+    color: var(--VerdeSecundario);
+    font-size: clamp(1.3rem, 2.5vw, 2rem);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin-bottom: 2vh;
+    position: relative;
+    padding-bottom: 1.2vh;
+}
+
+#TituloSecundario::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background-color: var(--VerdePrincipal);
+    border-radius: 2px;
 }
 
 #TextoDeExplicacao {
-    color: var(--VerdeSecundario);
-    font-size: 3vh;
-    margin-top: 0%;
-    max-width: 80%;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    margin-bottom: 2%;
-    line-height: 1.5;
-    text-align: justify;
-    text-indent: 5%;
+    color: #333333;
+    font-size: clamp(0.9rem, 1.4vw, 1.1rem);
+    font-weight: 400;
+    line-height: 1.8;
+    max-width: 800px;
 }
 
 footer {
@@ -175,6 +207,8 @@ footer {
     color: var(--Menu);
     text-align: center;
     padding: 3vh 0;
-    bottom: 0;
     width: 100%;
+    font-size: 0.9rem;
+    letter-spacing: 0.03em;
+    opacity: 0.9;
 }

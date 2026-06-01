@@ -28,30 +28,40 @@ select {
 }
 
 #Cabeçalho {
-  background-color: var(--VerdeSecundario);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  padding-left: 2%;
-  height: 7vh;
-  gap: 3%;
+    background-color: var(--VerdeSecundario);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 2%;
+    height: 7vh;
+    gap: 3%;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 #BotaoMenu {
-  width: 4vw;
-  height: 4vh;
-  border: none;
-  margin-left: 10px;
-  cursor: pointer;
-  fill: var(--Menu);
+    width: 4vw;
+    height: 4vh;
+    border: none;
+    margin-left: 10px;
+    cursor: pointer;
+    fill: var(--Menu);
+    transition: opacity 0.2s;
+}
+
+#BotaoMenu:hover {
+    opacity: 0.75;
 }
 
 #CabeçalhoTitulo {
-  color: var(--Menu);
-  font-size: 4vh;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
+    color: var(--Menu);
+    font-size: 4vh;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    letter-spacing: 0.08em;
 }
 
 #Barra_lateral {
@@ -66,6 +76,7 @@ select {
   padding-top: 1%;
   transition: 0.3s;
   border-right: var(--VerdePrincipal) solid 2px;
+  z-index: 200
 }
 
 /* quando abrir */
@@ -122,7 +133,7 @@ select {
   align-items: center;
   justify-content: center;
   width: 30vw;
-  height: 150vh;
+  height: 120vh;
   background-color: var(--BackGround2);
   border-radius: 10px;
   box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.1);

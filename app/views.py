@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-from app.app import app
-from flask import render_template, send_file
-import os
-=======
 from datetime import datetime
 
 from flask import flash, redirect, render_template, request, url_for
@@ -12,7 +7,6 @@ from app.app import app, db
 from app.auth import admin_required, profissional_required
 from app.calculo_back_end import LIMIAR
 from app.models import Avaliacao, AvaliacaoSintoma, Paciente, Sintoma
->>>>>>> 7c0096dff5a648b1ded4a784d209ade04d21260e
 
 
 # ---------------------------------------------------------------------------
@@ -37,15 +31,6 @@ def sobre_nos():
 def saiba_mais():
     return render_template("Abas_Extras/Saiba_mais.html")
 
-<<<<<<< HEAD
-@app.route('/login2')
-def login2():
-    return render_template("login/login2.html")
-
-@app.route('/interno')
-def interno():
-    return render_template("Abas_internas/menu_interno.html")
-=======
 
 @app.route("/cadastro")
 def cadastro():
@@ -312,4 +297,3 @@ def avaliacao_imprimir(avaliacao_id):
 @login_required
 def avaliacao_index():
     return redirect(url_for("pacientes_lista"))
->>>>>>> 7c0096dff5a648b1ded4a784d209ade04d21260e
