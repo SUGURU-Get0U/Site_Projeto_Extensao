@@ -16,6 +16,10 @@
 
   <p>
     <a class="btn-calcular" href="{{ url_for('admin.usuario_novo') }}">+ Novo usuário</a>
+    &nbsp;
+    <a class="btn-calcular" href="{{ url_for('admin.instituicoes_lista') }}" style="background:#1E3A8A;">
+      Gerenciar Instituições
+    </a>
   </p>
 
   <table class="tabela-sintomas">
@@ -24,6 +28,7 @@
         <th>Nome</th>
         <th>E-mail</th>
         <th>Papel</th>
+        <th>Instituição</th>
         <th>Status</th>
         <th>Último login</th>
         <th>Ações</th>
@@ -35,6 +40,7 @@
         <td>{{ u.nome_completo }}</td>
         <td>{{ u.email }}</td>
         <td>{{ u.role.nome }}</td>
+        <td>{{ u.instituicao.nome if u.instituicao else '—' }}</td>
         <td>{{ "Ativo" if u.ativo else "Inativo" }}</td>
         <td>{{ u.ultimo_login.strftime('%d/%m/%Y') if u.ultimo_login else '—' }}</td>
         <td>

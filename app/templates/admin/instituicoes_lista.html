@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block titulo %}Instituições — Admin{% endblock %}
+{% block scripts %}
+<link rel="stylesheet" href="{{ url_for('static', filename='avaliacao/estilo_avaliacao.css') }}" />
+{% endblock %}
+
+{% block conteudo %}
+<main id="ConteudoAvaliacao">
+  <h1>Gestão de Instituições</h1>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      <div class="resumo {{ 'ok' if cat == 'ok' else 'alerta' }}">{{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  <p>
+    <a class="btn-calcular" href="{{ url_for('admin.instituicao_nova') }}">+ Nova instituição</a>
+    &nbsp;
+    <a href="{{ url_for('admin.usuarios_lista') }}" style="font-size:.85rem;color:#64748B;">← Voltar</a>
+  </p>
+
+  <table class="tabela-sintomas">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Nome</th>
+        <th>Cidade</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for inst in instituicoes %}
+      <tr>
+        <td style="color:#94A3B8;">{{ inst.id }}</td>
+        <td>{{ inst.nome }}</td>
+        <td>{{ inst.cidade or '—' }}</td>
+        <td>{{ "Ativa" if inst.ativa else "Inativa" }}</td>
+        <td>
+          <a href="{{ url_for('admin.instituicao_editar', inst_id=inst.id) }}">Editar</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</main>
+{% endblock %}

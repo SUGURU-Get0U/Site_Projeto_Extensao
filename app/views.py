@@ -9,7 +9,7 @@ from flask import flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from app.app import app, db
-from app.auth import admin_required
+from app.auth import admin_required, profissional_required
 from app.calculo_back_end import LIMIAR
 from app.models import Avaliacao, AvaliacaoSintoma, Paciente, Sintoma
 >>>>>>> 7c0096dff5a648b1ded4a784d209ade04d21260e
@@ -61,15 +61,30 @@ def interno():
 # ---------------------------------------------------------------------------
 # Pacientes
 # ---------------------------------------------------------------------------
-@app.route("/pacientes")
+@app.route("/meu-historico")
 @login_required
+def meu_historico():
+    """Rota exclusiva para usuários com role=paciente verem suas próprias avaliações."""
+    if not current_user.is_paciente:
+        return redirect(url_for("pacientes_lista"))
+    paciente = current_user.paciente_vinculo
+    avaliacoes = paciente.avaliacoes if paciente else []
+    return render_template("pacientes/historico.html", paciente=paciente, avaliacoes=avaliacoes)
+
+
+@app.route("/pacientes")
+@profissional_required
 def pacientes_lista():
     busca = request.args.get("q", "").strip()
     genero = request.args.get("genero", "")
     q = Paciente.query.filter_by(ativo=True)
 
-    if not current_user.is_admin:
-        q = q.filter_by(cadastrado_por=current_user.id)
+    if current_user.is_admin_master:
+        pass  # vê todos os pacientes de todas as instituições
+    elif current_user.instituicao_id:
+        q = q.filter_by(instituicao_id=current_user.instituicao_id)
+    else:
+        q = q.filter_by(cadastrado_por=current_user.id)  # fallback sem instituição
 
     if busca:
         q = q.filter(Paciente.nome_completo.ilike(f"%{busca}%"))
@@ -81,7 +96,7 @@ def pacientes_lista():
 
 
 @app.route("/pacientes/novo", methods=["GET", "POST"])
-@login_required
+@profissional_required
 def pacientes_novo():
     if request.method == "POST":
         try:
@@ -100,6 +115,7 @@ def pacientes_novo():
             email_responsavel=request.form.get("email_responsavel") or None,
             observacoes=request.form.get("observacoes") or None,
             cadastrado_por=current_user.id,
+            instituicao_id=current_user.instituicao_id,
         )
         db.session.add(paciente)
         db.session.commit()
@@ -160,7 +176,7 @@ def paciente_desativar(paciente_id):
 # Avaliação
 # ---------------------------------------------------------------------------
 @app.route("/pacientes/<int:paciente_id>/avaliar", methods=["GET"])
-@login_required
+@profissional_required
 def avaliacao_form(paciente_id):
     paciente = Paciente.query.get_or_404(paciente_id)
     sintomas = Sintoma.query.filter_by(ativo=True).order_by(Sintoma.ordem).all()
@@ -170,7 +186,7 @@ def avaliacao_form(paciente_id):
 
 
 @app.route("/pacientes/<int:paciente_id>/avaliar", methods=["POST"])
-@login_required
+@profissional_required
 def avaliacao_salvar(paciente_id):
     paciente = Paciente.query.get_or_404(paciente_id)
     marcados_ids = {int(i) for i in request.form.getlist("sintoma")}

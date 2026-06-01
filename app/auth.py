@@ -5,7 +5,7 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 
 from app.app import bcrypt, db
-from app.models import Usuario
+from app.models import Role, Usuario
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -35,13 +35,25 @@ def admin_master_required(f):
     return decorated
 
 
+def profissional_required(f):
+    """Bloqueia pacientes — apenas profissionais e admins podem acessar."""
+    @wraps(f)
+    @login_required
+    def decorated(*args, **kwargs):
+        if current_user.is_paciente:
+            flash("Acesso restrito a profissionais de saúde.", "erro")
+            return redirect(url_for("meu_historico"))
+        return f(*args, **kwargs)
+    return decorated
+
+
 # ---------------------------------------------------------------------------
 # Login / Logout
 # ---------------------------------------------------------------------------
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for("pacientes_lista"))
+        return _redirecionar_por_role(current_user)
 
     if request.method == "POST":
         email = request.form.get("email", "").strip().lower()
@@ -75,7 +87,7 @@ def login():
 
         login_user(usuario, remember=False)
         proximo = request.args.get("next")
-        return redirect(proximo or url_for("pacientes_lista"))
+        return redirect(proximo or _redirecionar_por_role(usuario).location)
 
     return render_template("login/login.html")
 
@@ -86,3 +98,12 @@ def logout():
     logout_user()
     flash("Você saiu do sistema.", "ok")
     return redirect(url_for("auth.login"))
+
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+def _redirecionar_por_role(usuario):
+    if usuario.role_id == Role.PACIENTE:
+        return redirect(url_for("meu_historico"))
+    return redirect(url_for("pacientes_lista"))

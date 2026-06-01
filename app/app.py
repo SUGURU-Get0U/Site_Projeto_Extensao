@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("FLASK_SECRET_KEY", "dev-secret-change-me")
+app.config["ENCRYPTION_KEY"] = os.environ.get("ENCRYPTION_KEY", "")
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
     "DATABASE_URL",
     "sqlite:///" + os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "sxf_local.db"),
@@ -31,7 +32,7 @@ def load_user(user_id):
 def _bootstrap_db():
     from app import models
     from app.calculo_back_end import SINTOMAS as SINTOMAS_PY
-    from app.models import Role, Sintoma, Usuario
+    from app.models import Instituicao, Role, Sintoma, Usuario
 
     db.create_all()
 
@@ -40,12 +41,19 @@ def _bootstrap_db():
             Role(id=1, nome="admin_master", descricao="Administrador com acesso total"),
             Role(id=2, nome="admin", descricao="Administrador institucional"),
             Role(id=3, nome="profissional", descricao="Profissional de saúde"),
+            Role(id=4, nome="paciente", descricao="Paciente — acesso somente ao próprio histórico"),
         ])
+        db.session.commit()
+
+    if Instituicao.query.count() == 0:
+        inst = Instituicao(id=1, nome="Hospital Padrão", cidade="—", ativa=True)
+        db.session.add(inst)
         db.session.commit()
 
     if Usuario.query.count() == 0:
         admin = Usuario(
             role_id=1,
+            instituicao_id=1,
             nome_completo="Administrador Master",
             email="admin@sxf.com",
             senha_hash=bcrypt.generate_password_hash("Admin@2026").decode("utf-8"),
