@@ -26,12 +26,27 @@ services:
       - .:/app
     working_dir: /app
     environment:
-      FLASK_ENV: development
-      DATABASE_URL: mysql+pymysql://sxf_user:sxf_pass_2026@db:3306/sxf_checklist
-    depends_on:
-      db:
-        condition: service_healthy
+      - FLASK_ENV=development
+      # Updated to use the MySQL driver (pymysql) and connection string
+      - DATABASE_URL=mysql+pymysql://buko_admin:buko_password@db:3306/sxf_checklist
     command: flask --app app.app run --host=0.0.0.0 --debug
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password_here
+      - MYSQL_DATABASE=sxf_checklist
+      - MYSQL_USER=buko_admin
+      - MYSQL_PASSWORD=buko_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      # Automatically runs your SQL script on startup
+      - ./sxf_checklist.sql:/docker-entrypoint-initdb.d/init.sql:ro
 
 volumes:
-  sxf_db_data:
+  mysql_data:
