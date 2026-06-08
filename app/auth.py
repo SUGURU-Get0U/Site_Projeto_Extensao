@@ -59,9 +59,9 @@ def login():
         cpf = request.form.get("cpf", "").strip()
         senha = request.form.get("senha", "")
 
-        # Buscar paciente pelo CPF
-        paciente = Paciente.query.filter_by(cpf=cpf, ativo=True).first()
-        
+        # Buscar paciente pelo CPF em hash determinístico
+        paciente = Paciente.query.filter_by(cpf_hash=Paciente.hash_cpf(cpf), ativo=True).first()
+
         if not paciente:
             flash("CPF ou senha inválidos.", "erro")
             return render_template("login/login.html")
