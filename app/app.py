@@ -50,15 +50,20 @@ def login2():
 def criar_paciente():
     dados = request.get_json()
 
+
     if not dados:
         return jsonify({"erro": "Nenhum dado fornecido"}), 400
 
     try:
+
+        id_usuario = dados.get('cadastrado_por', 1)
+        
         novo_paciente = Paciente(
             nome_completo=dados['nome_completo'],
             data_nascimento=dados['data_nascimento'],
             genero=dados['genero'],
-            cpf=dados.get('cpf') 
+            cpf=dados.get('cpf'),
+            cadastrado_por=int(id_usuario) 
         )
 
         db.session.add(novo_paciente)
