@@ -193,6 +193,7 @@ def avaliacao_salvar(paciente_id):
     avaliacao = Avaliacao(
         paciente_id=paciente.id,
         usuario_id=current_user.id,
+        instituicao_id=current_user.instituicao_id or paciente.instituicao_id,
         score=score,
         limiar_aplicado=limiar,
         recomenda_teste=(score >= limiar),
