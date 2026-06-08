@@ -23,7 +23,7 @@ services:
       - MYSQL_USER=buko_admin
       - MYSQL_PASSWORD=buko_password
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       # Automatically runs your SQL script on startup

@@ -16,7 +16,8 @@ dependencies = [
     "Flask-Migrate",
     "Flask-Bcrypt",
     "flask-cors",
-    "python-dotenv"
+    "python-dotenv",
+    "pymysql>=1.1.0"
 ]
 
 [build-system]
