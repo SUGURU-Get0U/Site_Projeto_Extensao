@@ -17,10 +17,7 @@ dependencies = [
     "Flask-Bcrypt",
     "flask-cors",
     "python-dotenv",
-    "PyMySQL",
-    "cryptography",
-    "Flask-Login",
-    "Flask-Bcrypt"
+    "pymysql>=1.1.0"
 ]
 
 [build-system]
