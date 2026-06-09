@@ -94,7 +94,9 @@ def login():
 
         login_user(usuario, remember=False)
         proximo = request.args.get("next")
-        return redirect(proximo or _redirecionar_por_role(usuario).location)
+        if proximo:
+            return redirect(proximo)
+        return _redirecionar_por_role(usuario)
 
     return render_template("login/login.html")
 
@@ -135,7 +137,9 @@ def login2():
 
         login_user(usuario, remember=False)
         proximo = request.args.get("next")
-        return redirect(proximo or _redirecionar_por_role(usuario).location)
+        if proximo:
+            return redirect(proximo)
+        return _redirecionar_por_role(usuario)
 
     return render_template("login/login2.html")
 
@@ -154,4 +158,4 @@ def logout():
 def _redirecionar_por_role(usuario):
     if usuario.role_id == Role.PACIENTE:
         return redirect(url_for("meu_historico"))
-    return redirect(url_for("pacientes_lista"))
+    return redirect(url_for("interno"))

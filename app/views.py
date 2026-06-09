@@ -3,10 +3,10 @@ from datetime import datetime
 from flask import flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
-from app.app import app, db
+from app.app import app, bcrypt, db
 from app.auth import admin_required, profissional_required
 from app.calculo_back_end import LIMIAR
-from app.models import Avaliacao, AvaliacaoSintoma, Paciente, Sintoma
+from app.models import Avaliacao, AvaliacaoSintoma, Paciente, Role, Sintoma, Usuario
 
 
 # ---------------------------------------------------------------------------
@@ -32,8 +32,67 @@ def saiba_mais():
     return render_template("Abas_Extras/Saiba_mais.html")
 
 
-@app.route("/cadastro")
+@app.route("/cadastro", methods=["GET", "POST"])
 def cadastro():
+    if request.method == "POST":
+        tipo = (request.form.get("tipo_de_usuario") or "paciente").strip().lower()
+        nome = request.form.get("nome", "").strip()
+        cpf = request.form.get("cpf", "").strip()
+        email = request.form.get("email", "").strip().lower()
+        telefone = request.form.get("telefone", "").strip()
+        data_nascimento = request.form.get("data_nascimento", "").strip()
+        senha = request.form.get("senha", "")
+
+        if not all([nome, cpf, email, telefone, data_nascimento, senha]):
+            flash("Preencha todos os campos obrigatórios.", "erro")
+            return render_template("cadastro/cadastro.html")
+
+        if Usuario.query.filter_by(email=email).first():
+            flash("Este e-mail já está cadastrado.", "erro")
+            return render_template("cadastro/cadastro.html")
+
+        if Paciente.query.filter_by(cpf_hash=Paciente.hash_cpf(cpf), ativo=True).first():
+            flash("Este CPF já está cadastrado.", "erro")
+            return render_template("cadastro/cadastro.html")
+
+        try:
+            data_nasc = datetime.strptime(data_nascimento, "%Y-%m-%d").date()
+        except ValueError:
+            flash("Data de nascimento inválida.", "erro")
+            return render_template("cadastro/cadastro.html")
+
+        role_id = Role.PACIENTE if tipo == "paciente" else Role.PROFISSIONAL
+        usuario = Usuario(
+            role_id=role_id,
+            nome_completo=nome,
+            email=email,
+            senha_hash=bcrypt.generate_password_hash(senha).decode("utf-8"),
+            ativo=True,
+            email_verificado=True,
+        )
+        db.session.add(usuario)
+        db.session.flush()
+
+        paciente = Paciente(
+            nome_completo=nome,
+            data_nascimento=data_nasc,
+            genero="M",
+            cpf=cpf,
+            nome_responsavel=nome,
+            telefone_responsavel=telefone,
+            email_responsavel=email,
+            cadastrado_por=usuario.id,
+            ativo=True,
+        )
+        db.session.add(paciente)
+        db.session.flush()
+
+        usuario.paciente_id = paciente.id if role_id == Role.PACIENTE else None
+        db.session.commit()
+
+        flash("Cadastro realizado com sucesso. Faça login para continuar.", "ok")
+        return redirect(url_for("auth.login"))
+
     return render_template("cadastro/cadastro.html")
 
 

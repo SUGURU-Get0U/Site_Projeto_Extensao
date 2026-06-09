@@ -20,7 +20,7 @@ _fernet_instance = None
 def _get_fernet():
     global _fernet_instance
     if _fernet_instance is None:
-        key = os.environ.get("ENCRYPTION_KEY")
+        key = os.environ.get("ENCRYPTION_KEY") or os.environ.get("FLASK_SECRET_KEY")
         if not key:
             key = Fernet.generate_key().decode()
             warnings.warn(

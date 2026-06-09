@@ -32,7 +32,7 @@ def load_user(user_id):
 def _bootstrap_db():
     from app import models
     from app.calculo_back_end import SINTOMAS as SINTOMAS_PY
-    from app.models import Instituicao, Role, Sintoma, Usuario
+    from app.models import Instituicao, Paciente, Role, Sintoma, Usuario
 
     db.create_all()
 
@@ -76,8 +76,15 @@ def _bootstrap_db():
             ))
         db.session.commit()
 
+    pacientes_sem_hash = Paciente.query.filter(Paciente.cpf_hash.is_(None)).all()
+    if pacientes_sem_hash:
+        for paciente in pacientes_sem_hash:
+            paciente.cpf_hash = Paciente.hash_cpf(paciente.cpf)
+        db.session.commit()
+
 
 from app import views  # noqa: E402,F401
+from app import cli  # noqa: E402,F401
 from app.auth import auth_bp  # noqa: E402
 from app.admin import admin_bp  # noqa: E402
 from app.relatorios import relatorios_bp  # noqa: E402
@@ -85,9 +92,6 @@ from app.relatorios import relatorios_bp  # noqa: E402
 app.register_blueprint(auth_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(relatorios_bp)
-
-with app.app_context():
-    _bootstrap_db()
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")

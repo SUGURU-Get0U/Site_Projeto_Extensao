@@ -11,7 +11,7 @@
 <div id="Container_de_formulario">
   <div id="formulario">
     <h1 id="titulo_formulario">Cadastrar-se</h1>
-    <form id="formulario_cadastro">
+    <form id="formulario_cadastro" method="post" action="{{ url_for('cadastro') }}">
       <label for="tipo_de_usuario">Tipo de Usuário:</label>
       <select id="tipo_de_usuario" name="tipo_de_usuario" required>
         <option value="paciente">Paciente</option>
