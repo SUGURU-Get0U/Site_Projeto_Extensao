@@ -6,7 +6,7 @@ from flask_login import current_user, login_required
 from app.app import app, bcrypt, db
 from app.auth import admin_required, profissional_required
 from app.calculo_back_end import LIMIAR
-from app.models import Avaliacao, AvaliacaoSintoma, Paciente, Role, Sintoma, Usuario
+from app.models import Avaliacao, AvaliacaoSintoma, Instituicao, Paciente, Role, Sintoma, Usuario
 
 
 # ---------------------------------------------------------------------------
@@ -99,7 +99,42 @@ def cadastro():
 @app.route("/interno")
 @login_required
 def interno():
-    return render_template("Abas_Internas/menu_interno.html")
+    from datetime import date
+    inst_id = current_user.instituicao_id
+
+    q_pacientes = Paciente.query.filter_by(ativo=True)
+    q_avaliacoes = Avaliacao.query.filter_by(status="finalizada")
+    if not current_user.is_admin_master and inst_id:
+        q_pacientes = q_pacientes.filter_by(instituicao_id=inst_id)
+        q_avaliacoes = q_avaliacoes.join(Paciente, Avaliacao.paciente_id == Paciente.id).filter(
+            Paciente.instituicao_id == inst_id
+        )
+
+    total_pacientes = q_pacientes.count()
+    total_avaliacoes = q_avaliacoes.count()
+    alto_risco = Avaliacao.query.filter_by(recomenda_teste=True, status="finalizada").count()
+    ultimas = (
+        Avaliacao.query.join(Paciente, Avaliacao.paciente_id == Paciente.id)
+        .filter(Paciente.ativo == True)
+        .order_by(Avaliacao.realizada_em.desc())
+        .limit(5)
+        .all()
+    )
+
+    return render_template(
+        "Abas_Internas/menu_interno.html",
+        hoje=date.today().strftime("%d/%m/%Y"),
+        total_pacientes=total_pacientes,
+        total_avaliacoes=total_avaliacoes,
+        alto_risco=alto_risco,
+        ultimas=ultimas,
+    )
+
+
+@app.route("/calculadora")
+@profissional_required
+def calculadora():
+    return redirect(url_for("pacientes_lista"))
 
 
 # ---------------------------------------------------------------------------
