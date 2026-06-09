@@ -711,18 +711,6 @@ INSERT INTO usuarios (id, role_id, instituicao_id, nome_completo, email, senha_h
     (1, 1, NULL, 'Administrador Master SXF',
      'admin@sxf.com',
      '$2b$12$KixMHDnZY9Q6xMb8EWdROuGTEQ8A4v7C3NxNYQzfAa1gORNEPHVGi',
-     1, 1),
-    (2, 2, 1, 'Ricardo Magno Yomura',
-     'ricardo@sxf.com',
-     '$2b$12$eImiTXuWVxfM8objhReanugI8/OyI5ZxjHm2P4A0e2JTjdMBpZYZm',
-     1, 1),
-    (3, 3, 1, 'Dr. Carlos Eduardo Silva',
-     'dr.carlos@sxf.com',
-     '$2b$12$eImiTXuWVxfM8objhReanugI8/OyI5ZxjHm2P4A0e2JTjdMBpZYZm',
-     1, 1),
-    (4, 3, 1, 'Dra. Ana Paula Costa',
-     'dra.ana@sxf.com',
-     '$2b$12$eImiTXuWVxfM8objhReanugI8/OyI5ZxjHm2P4A0e2JTjdMBpZYZm',
      1, 1);
 
 INSERT INTO admins (usuario_id, departamento) VALUES
@@ -741,7 +729,7 @@ INSERT INTO profissional_instituicao (profissional_id, instituicao_id, cargo, da
 INSERT INTO pacientes (instituicao_id, nome_completo, data_nascimento, genero, nome_responsavel, observacoes, cadastrado_por) VALUES
     (1, 'Lucas Ferreira Almeida', '2015-03-12', 'M', 'Maria Almeida',  'Criança com histórico familiar positivo para SXF.', 3),
     (1, 'Sofia Pereira Santos',   '2018-07-22', 'F', 'Pedro Santos',   'Encaminhada pelo pediatra com suspeita de atraso.', 4),
-    (1, 'Gabriel Torres Machado', '2013-09-18', 'M', 'Luana Machado',  'Diagnóstico de TDAH prévio.', 3);
+    (1, 'Gabriel Torres José', '2013-09-18', 'M', 'Luana Machado',  'Diagnóstico de TDAH prévio.', 3);
 
 
 -- ============================================================
