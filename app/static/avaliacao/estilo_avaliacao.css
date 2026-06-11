@@ -14,12 +14,14 @@ body {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
-h1 {
+#ConteudoAvaliacao h1,
+#ConteudoResultado h1 {
   color: #1a4d6e;
   margin-top: 0;
 }
 
-h2 {
+#ConteudoAvaliacao h2,
+#ConteudoResultado h2 {
   color: #1a4d6e;
   margin-top: 32px;
   border-bottom: 2px solid #e0e6ed;
@@ -139,3 +141,38 @@ h2 {
   font-size: 0.85rem;
   text-align: center;
 }
+
+.rodape-info a {
+  color: #64748B;
+  font-size: .8rem;
+  text-decoration: none;
+}
+
+.rodape-info a:hover { text-decoration: underline; }
+
+/* ===================== BADGES ===================== */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: .75rem;
+  font-weight: 700;
+}
+
+.badge-ok     { background: #D1FAE5; color: #059669; }
+.badge-alerta { background: #FEE2E2; color: #DC2626; }
+
+/* ===================== CÉLULAS DE TABELA ===================== */
+.cel-id     { color: #94A3B8; }
+.cel-score  { font-weight: 700; }
+.cel-status { color: #64748B; }
+
+/* ===================== LINK DE AÇÃO ===================== */
+.link-acao {
+  color: #2A7FFF;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: .78rem;
+}
+
+.link-acao:hover { text-decoration: underline; }

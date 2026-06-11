@@ -2,12 +2,16 @@
 
 {% block titulo %}Meu Histórico{% endblock %}
 
+{% block estilos %}
+<link rel="stylesheet" href="{{ url_for('static', filename='avaliacao/estilo_avaliacao.css') }}" />
+{% endblock %}
+
 {% block conteudo %}
-<div style="max-width:800px;margin:40px auto;padding:0 16px;">
-  <h1 style="font-size:1.4rem;color:#1E3A8A;margin-bottom:4px;">Meu Histórico de Avaliações</h1>
+<main id="ConteudoAvaliacao">
+  <h1>Meu Histórico de Avaliações</h1>
 
   {% if paciente %}
-    <p style="color:#64748B;font-size:.85rem;margin-bottom:24px;">
+    <p class="descricao">
       {{ paciente.nome_completo }} &mdash; {{ paciente.genero_extenso }}
       {% if paciente.idade %} &mdash; {{ paciente.idade }} anos{% endif %}
     </p>
@@ -15,51 +19,42 @@
 
   {% with msgs = get_flashed_messages(with_categories=true) %}
     {% for cat, msg in msgs %}
-      <div style="padding:10px 14px;border-radius:6px;margin-bottom:12px;
-                  background:{{'#D1FAE5' if cat=='ok' else '#FEE2E2'}};
-                  color:{{'#065F46' if cat=='ok' else '#991B1B'}};font-size:.82rem;">
-        {{ msg }}
-      </div>
+      <div class="resumo {{ 'ok' if cat == 'ok' else 'alerta' }}">{{ msg }}</div>
     {% endfor %}
   {% endwith %}
 
   {% if not paciente %}
-    <p style="color:#64748B;">Seu perfil de paciente ainda não foi vinculado. Contate o administrador.</p>
+    <p class="descricao">Seu perfil de paciente ainda não foi vinculado. Contate o administrador.</p>
   {% elif not avaliacoes %}
-    <p style="color:#64748B;">Nenhuma avaliação registrada ainda.</p>
+    <p class="descricao">Nenhuma avaliação registrada ainda.</p>
   {% else %}
-    <table style="width:100%;border-collapse:collapse;font-size:.83rem;">
+    <table class="tabela-sintomas">
       <thead>
-        <tr style="background:#EFF6FF;color:#1E3A8A;text-align:left;">
-          <th style="padding:10px 12px;border-bottom:1px solid #BFDBFE;">#</th>
-          <th style="padding:10px 12px;border-bottom:1px solid #BFDBFE;">Data</th>
-          <th style="padding:10px 12px;border-bottom:1px solid #BFDBFE;">Score</th>
-          <th style="padding:10px 12px;border-bottom:1px solid #BFDBFE;">Resultado</th>
-          <th style="padding:10px 12px;border-bottom:1px solid #BFDBFE;">Status</th>
-          <th style="padding:10px 12px;border-bottom:1px solid #BFDBFE;"></th>
+        <tr>
+          <th>#</th>
+          <th>Data</th>
+          <th>Score</th>
+          <th>Resultado</th>
+          <th>Status</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
         {% for av in avaliacoes %}
-        <tr style="border-bottom:1px solid #F1F5F9;">
-          <td style="padding:10px 12px;color:#94A3B8;">{{ av.id }}</td>
-          <td style="padding:10px 12px;">{{ av.realizada_em.strftime('%d/%m/%Y') }}</td>
-          <td style="padding:10px 12px;font-weight:700;">{{ av.score }}</td>
-          <td style="padding:10px 12px;">
+        <tr>
+          <td class="cel-id">{{ av.id }}</td>
+          <td>{{ av.realizada_em.strftime('%d/%m/%Y') }}</td>
+          <td class="cel-score">{{ av.score }}</td>
+          <td>
             {% if av.recomenda_teste %}
-              <span style="background:#FEE2E2;color:#DC2626;padding:2px 8px;border-radius:20px;font-size:.75rem;font-weight:700;">
-                Recomenda teste
-              </span>
+              <span class="badge badge-alerta">Recomenda teste</span>
             {% else %}
-              <span style="background:#D1FAE5;color:#059669;padding:2px 8px;border-radius:20px;font-size:.75rem;font-weight:700;">
-                Sem indicação
-              </span>
+              <span class="badge badge-ok">Sem indicação</span>
             {% endif %}
           </td>
-          <td style="padding:10px 12px;color:#64748B;">{{ av.status }}</td>
-          <td style="padding:10px 12px;">
-            <a href="{{ url_for('avaliacao_resultado', avaliacao_id=av.id) }}"
-               style="color:#2A7FFF;font-weight:700;text-decoration:none;font-size:.78rem;">
+          <td class="cel-status">{{ av.status }}</td>
+          <td>
+            <a class="link-acao" href="{{ url_for('avaliacao_resultado', avaliacao_id=av.id) }}">
               Ver detalhes
             </a>
           </td>
@@ -69,11 +64,8 @@
     </table>
   {% endif %}
 
-  <div style="margin-top:28px;">
-    <a href="{{ url_for('auth.logout') }}"
-       style="color:#64748B;font-size:.8rem;text-decoration:none;">
-      Sair do sistema
-    </a>
+  <div class="rodape-info">
+    <a href="{{ url_for('auth.logout') }}">Sair do sistema</a>
   </div>
-</div>
+</main>
 {% endblock %}
