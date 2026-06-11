@@ -1,0 +1,37 @@
+services:
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: sxf_root_2026
+      MYSQL_DATABASE: sxf_checklist
+      MYSQL_USER: sxf_user
+      MYSQL_PASSWORD: sxf_pass_2026
+    ports:
+      - "3306:3306"
+    volumes:
+      - sxf_db_data:/var/lib/mysql
+      - ../sxf_checklist.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-psxf_root_2026"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      FLASK_ENV: development
+      DATABASE_URL: mysql+pymysql://sxf_user:sxf_pass_2026@db:3306/sxf_checklist
+    depends_on:
+      db:
+        condition: service_healthy
+    command: flask --app app.app run --host=0.0.0.0 --debug
+
+volumes:
+  sxf_db_data:
