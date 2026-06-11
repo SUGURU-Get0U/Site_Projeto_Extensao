@@ -1,0 +1,272 @@
+/* Google Fonts já carregado via base.html — @import removido para evitar requisição dupla */
+
+/* ===================== VARIÁVEIS ===================== */
+:root {
+    --azul:        #2A7FFF;
+    --azul-hover:  #1a6fef;
+    --azul-fundo:  #EFF6FF;
+    --azul-borda:  #BFDBFE;
+    --azul-dark:   #1E3A8A;
+    --bg:          #F0F4FF;
+    --bg-card:     #FFFFFF;
+    --borda:       #E2E8F4;
+    --texto:       #1A1A2E;
+    --suave:       #64748B;
+    --cinza:       #94A3B8;
+    --verde:       #22C55E;
+    --amarelo:     #F59E0B;
+    --vermelho:    #EF4444;
+    --fonte:       'Lato', sans-serif;
+    --fonte-titulo:'Raleway', sans-serif;
+    --radius:      10px;
+    --sombra:      0 1px 6px rgba(30,58,138,.07);
+    --t:           .2s ease;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--fonte); }
+
+body {
+    background: var(--bg);
+    color: var(--texto);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===================== CONTAINER PRINCIPAL ===================== */
+
+#ConteudoAvaliacao,
+#ConteudoResultado {
+    width: 90%;
+    flex: 1;
+    max-width: 860px;
+    margin: 2% auto;
+    padding: 3% 4%;
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    border: 1px solid var(--borda);
+    box-shadow: var(--sombra);
+}
+
+/* ===================== TÍTULOS ===================== */
+#ConteudoAvaliacao h1,
+#ConteudoResultado h1 {
+    font-family: var(--fonte-titulo);
+    color: var(--azul-dark);
+    font-size: 1.4vw;
+    font-weight: 800;
+    margin-bottom: 0.5%;
+}
+
+#ConteudoAvaliacao h2,
+#ConteudoResultado h2 {
+    font-family: var(--fonte-titulo);
+    color: var(--azul-dark);
+    font-size: 1.05vw;
+    font-weight: 700;
+    margin-top: 4%;
+    padding-bottom: 1%;
+    border-bottom: 2px solid var(--borda);
+}
+
+/* ===================== DESCRIÇÃO ===================== */
+.descricao {
+    color: var(--suave);
+    font-size: .88vw;
+    margin-bottom: 3%;
+}
+
+/* ===================== FORMULÁRIO DE GÊNERO ===================== */
+#FormGenero {
+    margin-bottom: 3%;
+    padding: 2% 3%;
+    background: var(--azul-fundo);
+    border: 1px solid var(--azul-borda);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    gap: 2%;
+    flex-wrap: wrap;
+}
+
+#FormGenero label {
+    font-weight: 700;
+    color: var(--azul-dark);
+    font-size: .88vw;
+}
+
+#FormGenero select {
+    padding: 1.5% 2%;
+    border: 1px solid var(--azul-borda);
+    border-radius: 7px;
+    font-size: .88vw;
+    background: var(--bg-card);
+    color: var(--texto);
+    font-family: var(--fonte);
+    transition: border-color var(--t);
+}
+
+#FormGenero select:focus {
+    outline: none;
+    border-color: var(--azul);
+}
+
+/* ===================== TABELA DE SINTOMAS ===================== */
+.tabela-sintomas {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 3%;
+    font-size: .85vw;
+}
+
+.tabela-sintomas th,
+.tabela-sintomas td {
+    padding: 1.5% 2%;
+    text-align: left;
+    border-bottom: 1px solid var(--borda);
+}
+
+.tabela-sintomas th {
+    background: var(--azul-dark);
+    color: #fff;
+    font-weight: 700;
+    font-size: .78vw;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+.tabela-sintomas th:first-child { border-radius: 7px 0 0 0; }
+.tabela-sintomas th:last-child  { border-radius: 0 7px 0 0; }
+
+.tabela-sintomas tbody tr:hover {
+    background: var(--azul-fundo);
+}
+
+/* ===================== BOTÃO CALCULAR ===================== */
+.btn-calcular {
+    display: inline-flex;
+    align-items: center;
+    gap: 1%;
+    background: var(--azul);
+    color: #fff;
+    padding: 1.5% 4%;
+    border: none;
+    border-radius: 7px;
+    font-size: .88vw;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all var(--t);
+    white-space: nowrap;
+}
+
+.btn-calcular:hover {
+    background: var(--azul-hover);
+    box-shadow: 0 3px 10px rgba(42,127,255,.28);
+    transform: translateY(-1px);
+}
+
+/* ===================== RESUMO / RESULTADO ===================== */
+.resumo {
+    padding: 2.5% 3%;
+    border-radius: var(--radius);
+    margin-bottom: 3%;
+    border: 1px solid var(--borda);
+}
+
+.resumo.alerta {
+    background: #FFF7ED;
+    border-left: 5px solid var(--amarelo);
+}
+
+.resumo.ok {
+    background: #F0FDF4;
+    border-left: 5px solid var(--verde);
+}
+
+.recomendacao {
+    margin-top: 2%;
+    font-size: .95vw;
+    color: var(--suave);
+}
+
+/* ===================== CAMPOS DE FORMULÁRIO ===================== */
+.form-paciente .campo,
+#FormAvaliacao .campo {
+    margin-bottom: 2%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4vh;
+}
+
+.form-paciente label,
+#FormAvaliacao .campo label {
+    font-weight: 700;
+    font-size: .82vw;
+    color: var(--azul-dark);
+}
+
+.form-paciente input,
+.form-paciente select,
+.form-paciente textarea,
+#FormAvaliacao textarea {
+    padding: 1.5% 2%;
+    border: 1px solid var(--borda);
+    border-radius: 7px;
+    font-size: .88vw;
+    font-family: var(--fonte);
+    color: var(--texto);
+    background: var(--bg-card);
+    transition: border-color var(--t);
+}
+
+.form-paciente input:focus,
+.form-paciente select:focus,
+.form-paciente textarea:focus,
+#FormAvaliacao textarea:focus {
+    outline: none;
+    border-color: var(--azul);
+}
+
+/* ===================== RODAPÉ INFO ===================== */
+.rodape-info {
+    margin-top: 4%;
+    color: var(--cinza);
+    font-size: .78vw;
+    text-align: center;
+}
+
+.rodape-info a {
+    color: var(--suave);
+    font-size: .8rem;
+    text-decoration: none;
+}
+
+.rodape-info a:hover { text-decoration: underline; }
+
+/* ===================== BADGES ===================== */
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: .75rem;
+    font-weight: 700;
+}
+
+.badge-ok    { background: #D1FAE5; color: #059669; }
+.badge-alerta { background: #FEE2E2; color: #DC2626; }
+
+/* ===================== CÉLULAS DE TABELA ===================== */
+.cel-id     { color: var(--cinza); }
+.cel-score  { font-weight: 700; }
+.cel-status { color: var(--suave); }
+
+/* ===================== LINK DE AÇÃO ===================== */
+.link-acao {
+    color: var(--azul);
+    font-weight: 700;
+    text-decoration: none;
+    font-size: .78rem;
+}
+
+.link-acao:hover { text-decoration: underline; }

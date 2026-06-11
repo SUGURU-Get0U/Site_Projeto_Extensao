@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block titulo %}{{ "Editar" if instituicao else "Nova" }} Instituição{% endblock %}
+{% block estilos %}
+<link rel="stylesheet" href="{{ url_for('static', filename='avaliacao/estilo_avaliacao.css') }}" />
+{% endblock %}
+
+{% block conteudo %}
+<main id="ConteudoAvaliacao">
+  <h1>{{ "Editar Instituição" if instituicao else "Nova Instituição" }}</h1>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      <div class="resumo {{ 'ok' if cat == 'ok' else 'alerta' }}">{{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  <form method="POST" class="form-paciente">
+    <div class="campo">
+      <label for="nome">Nome da instituição *</label>
+      <input type="text" id="nome" name="nome"
+             value="{{ instituicao.nome if instituicao else '' }}" required />
+    </div>
+
+    <div class="campo">
+      <label for="cidade">Cidade</label>
+      <input type="text" id="cidade" name="cidade"
+             value="{{ instituicao.cidade if instituicao and instituicao.cidade else '' }}" />
+    </div>
+
+    {% if instituicao %}
+    <div class="campo" style="flex-direction:row;align-items:center;gap:8px">
+      <input type="checkbox" id="ativa" name="ativa" {{ "checked" if instituicao.ativa }} />
+      <label for="ativa" style="margin:0">Instituição ativa</label>
+    </div>
+    {% endif %}
+
+    <button type="submit" class="btn-calcular">Salvar</button>
+    &nbsp;<a href="{{ url_for('admin.instituicoes_lista') }}">Cancelar</a>
+  </form>
+</main>
+{% endblock %}

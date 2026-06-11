@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block titulo %}Avaliação — {{ paciente.nome_completo }}{% endblock %}
+
+{% block estilos %}
+<link rel="stylesheet" href="{{ url_for('static', filename='avaliacao/estilo_avaliacao.css') }}" />
+{% endblock %}
+
+{% block conteudo %}
+<main id="ConteudoAvaliacao">
+  <h1>Checklist de Triagem — SXF</h1>
+
+  <section class="resumo ok">
+    <p>
+      <strong>Paciente:</strong> {{ paciente.nome_completo }}
+      ({{ paciente.genero_extenso }}, {{ paciente.idade }} anos)
+    </p>
+  </section>
+
+  <p class="descricao">
+    Marque os sintomas presentes no paciente. O score é calculado com pesos
+    derivados do Random Forest do artigo de Herai/Romero (coorte IBK, 419 indivíduos).
+  </p>
+
+  <form method="POST" action="{{ url_for('avaliacao_salvar', paciente_id=paciente.id) }}" id="FormAvaliacao">
+    <table class="tabela-sintomas">
+      <thead>
+        <tr>
+          <th>Presente?</th>
+          <th>Sintoma</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in sintomas %}
+        <tr>
+          <td>
+            <input type="checkbox" name="sintoma" value="{{ s.id }}" id="sintoma_{{ s.id }}" />
+          </td>
+          <td><label for="sintoma_{{ s.id }}">{{ s.nome }}</label></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="campo">
+      <label for="observacoes">Observações clínicas (opcional)</label>
+      <textarea id="observacoes" name="observacoes" rows="3"></textarea>
+    </div>
+
+    <button type="submit" class="btn-calcular">Calcular e salvar</button>
+    &nbsp;<a href="{{ url_for('paciente_detalhe', paciente_id=paciente.id) }}">Cancelar</a>
+  </form>
+</main>
+{% endblock %}

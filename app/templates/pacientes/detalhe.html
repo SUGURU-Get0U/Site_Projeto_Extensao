@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block titulo %}{{ paciente.nome_completo }}{% endblock %}
+{% block estilos %}
+<link rel="stylesheet" href="{{ url_for('static', filename='avaliacao/estilo_avaliacao.css') }}" />
+{% endblock %}
+
+{% block conteudo %}
+<main id="ConteudoAvaliacao">
+  <h1>{{ paciente.nome_completo }}</h1>
+
+  <section class="resumo ok">
+    <p><strong>Sexo:</strong> {{ paciente.genero_extenso }}</p>
+    <p><strong>Idade:</strong> {{ paciente.idade }} anos</p>
+    <p><strong>Data de nascimento:</strong> {{ paciente.data_nascimento.strftime('%d/%m/%Y') }}</p>
+    {% if paciente.cpf %}<p><strong>CPF:</strong> {{ paciente.cpf }}</p>{% endif %}
+    {% if paciente.nome_responsavel %}
+      <p><strong>Responsável:</strong> {{ paciente.nome_responsavel }}
+      {% if paciente.telefone_responsavel %} — {{ paciente.telefone_responsavel }}{% endif %}</p>
+    {% endif %}
+    {% if paciente.observacoes %}<p><strong>Observações:</strong> {{ paciente.observacoes }}</p>{% endif %}
+  </section>
+
+  <p>
+    <a class="btn-calcular" href="{{ url_for('avaliacao_form', paciente_id=paciente.id) }}">
+      Nova avaliação
+    </a>
+    &nbsp;
+    <a href="{{ url_for('pacientes_lista') }}">← Voltar à lista</a>
+  </p>
+
+  <h2>Histórico de Avaliações</h2>
+  {% if paciente.avaliacoes %}
+  <table class="tabela-sintomas">
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Score</th>
+        <th>Limiar</th>
+        <th>Resultado</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for a in paciente.avaliacoes %}
+      <tr>
+        <td>{{ a.realizada_em.strftime('%d/%m/%Y %H:%M') }}</td>
+        <td>{{ "%.2f"|format(a.score|float) }}</td>
+        <td>{{ "%.2f"|format(a.limiar_aplicado|float) }}</td>
+        <td>
+          {% if a.recomenda_teste %}
+            <span style="color:#c0571a;font-weight:bold">⚠ Encaminhar</span>
+          {% else %}
+            <span style="color:#2e7d32">✓ Não indica</span>
+          {% endif %}
+        </td>
+        <td>{{ a.status }}</td>
+        <td><a href="{{ url_for('avaliacao_resultado', avaliacao_id=a.id) }}">Ver</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p>Nenhuma avaliação realizada ainda.</p>
+  {% endif %}
+</main>
+{% endblock %}

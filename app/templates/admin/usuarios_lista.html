@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block titulo %}Usuários — Admin{% endblock %}
+{% block estilos %}
+<link rel="stylesheet" href="{{ url_for('static', filename='avaliacao/estilo_avaliacao.css') }}" />
+{% endblock %}
+
+{% block conteudo %}
+<main id="ConteudoAvaliacao">
+  <h1>Gestão de Usuários</h1>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      <div class="resumo {{ 'ok' if cat == 'ok' else 'alerta' }}">{{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  <p>
+    <a class="btn-calcular" href="{{ url_for('admin.usuario_novo') }}">+ Novo usuário</a>
+    &nbsp;
+    <a class="btn-calcular" href="{{ url_for('admin.instituicoes_lista') }}" style="background:#1E3A8A;">
+      Gerenciar Instituições
+    </a>
+  </p>
+
+  <table class="tabela-sintomas">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>E-mail</th>
+        <th>Papel</th>
+        <th>Instituição</th>
+        <th>Status</th>
+        <th>Último login</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in usuarios %}
+      <tr>
+        <td>{{ u.nome_completo }}</td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.role.nome }}</td>
+        <td>{{ u.instituicao.nome if u.instituicao else '—' }}</td>
+        <td>{{ "Ativo" if u.ativo else "Inativo" }}</td>
+        <td>{{ u.ultimo_login.strftime('%d/%m/%Y') if u.ultimo_login else '—' }}</td>
+        <td>
+          <a href="{{ url_for('admin.usuario_editar', usuario_id=u.id) }}">Editar</a>
+          {% if u.ativo and u.id != current_user.id %}
+          &nbsp;|&nbsp;
+          <form method="POST" action="{{ url_for('admin.usuario_desativar', usuario_id=u.id) }}" style="display:inline">
+            <button type="submit" style="background:none;border:none;color:#c0571a;cursor:pointer;padding:0">
+              Desativar
+            </button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</main>
+{% endblock %}

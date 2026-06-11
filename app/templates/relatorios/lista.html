@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block titulo %}Relatórios{% endblock %}
+{% block estilos %}
+<link rel="stylesheet" href="{{ url_for('static', filename='avaliacao/estilo_avaliacao.css') }}" />
+{% endblock %}
+
+{% block conteudo %}
+<main id="ConteudoAvaliacao">
+  <h1>Relatórios de Avaliações</h1>
+
+  {# Filtros #}
+  <form method="GET" style="background:#eef3f8;padding:16px;border-radius:8px;margin-bottom:20px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end">
+    <div class="campo" style="min-width:140px">
+      <label>Data inicial</label>
+      <input type="date" name="data_ini" value="{{ request.args.get('data_ini','') }}" />
+    </div>
+    <div class="campo" style="min-width:140px">
+      <label>Data final</label>
+      <input type="date" name="data_fim" value="{{ request.args.get('data_fim','') }}" />
+    </div>
+    <div class="campo" style="min-width:120px">
+      <label>Sexo</label>
+      <select name="genero">
+        <option value="">Todos</option>
+        <option value="M" {{ "selected" if request.args.get('genero')=='M' }}>Masculino</option>
+        <option value="F" {{ "selected" if request.args.get('genero')=='F' }}>Feminino</option>
+      </select>
+    </div>
+    <div class="campo" style="min-width:140px">
+      <label>Recomenda teste</label>
+      <select name="recomenda">
+        <option value="">Todos</option>
+        <option value="sim" {{ "selected" if request.args.get('recomenda')=='sim' }}>Sim</option>
+        <option value="nao" {{ "selected" if request.args.get('recomenda')=='nao' }}>Não</option>
+      </select>
+    </div>
+    <div class="campo" style="min-width:140px">
+      <label>Status</label>
+      <select name="status">
+        <option value="">Todos</option>
+        <option value="finalizada" {{ "selected" if request.args.get('status')=='finalizada' }}>Finalizada</option>
+        <option value="rascunho" {{ "selected" if request.args.get('status')=='rascunho' }}>Rascunho</option>
+        <option value="cancelada" {{ "selected" if request.args.get('status')=='cancelada' }}>Cancelada</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button type="submit" class="btn-calcular">Filtrar</button>
+      <a class="btn-calcular" href="{{ url_for('relatorios.lista') }}" style="background:#888">Limpar</a>
+    </div>
+  </form>
+
+  <p style="display:flex;justify-content:space-between;align-items:center">
+    <span>{{ total }} avaliação(ões) encontrada(s)</span>
+    <a class="btn-calcular" href="{{ url_for('relatorios.exportar_csv', **request.args) }}">
+      Exportar CSV
+    </a>
+  </p>
+
+  {% if avaliacoes %}
+  <table class="tabela-sintomas">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Data</th>
+        <th>Paciente</th>
+        <th>Sexo</th>
+        <th>Score</th>
+        <th>Limiar</th>
+        <th>Resultado</th>
+        <th>Status</th>
+        <th>Realizado por</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for a in avaliacoes %}
+      <tr>
+        <td>{{ a.id }}</td>
+        <td>{{ a.realizada_em.strftime('%d/%m/%Y') }}</td>
+        <td>
+          <a href="{{ url_for('paciente_detalhe', paciente_id=a.paciente.id) }}">
+            {{ a.paciente.nome_completo }}
+          </a>
+        </td>
+        <td>{{ a.paciente.genero_extenso }}</td>
+        <td>{{ "%.2f"|format(a.score|float) }}</td>
+        <td>{{ "%.2f"|format(a.limiar_aplicado|float) }}</td>
+        <td>
+          {% if a.recomenda_teste %}
+            <span style="color:#c0571a;font-weight:bold">⚠ Encaminhar</span>
+          {% else %}
+            <span style="color:#2e7d32">✓ Não indica</span>
+          {% endif %}
+        </td>
+        <td>{{ a.status }}</td>
+        <td>{{ a.usuario.nome_completo if a.usuario else '—' }}</td>
+        <td>
+          <a href="{{ url_for('avaliacao_resultado', avaliacao_id=a.id) }}">Ver</a>
+          &nbsp;|&nbsp;
+          <a href="{{ url_for('avaliacao_imprimir', avaliacao_id=a.id) }}" target="_blank">Imprimir</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {# Paginação #}
+  {% if total_paginas > 1 %}
+  <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+    {% for p in range(1, total_paginas+1) %}
+      {% set args = request.args.to_dict() %}
+      {% set _ = args.update({'pagina': p}) %}
+      <a href="{{ url_for('relatorios.lista', **args) }}"
+         class="btn-calcular"
+         style="{{ 'background:#14405d' if p == pagina else 'background:#1a4d6e' }}">
+        {{ p }}
+      </a>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% else %}
+    <p>Nenhuma avaliação encontrada com os filtros aplicados.</p>
+  {% endif %}
+</main>
+{% endblock %}

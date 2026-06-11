@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="newsite" content="width=device-width, initial-scale=1.0" />
+    <title>PROJETO WEB EXP CRIATIVA</title>
+    <link rel="stylesheet" href="../../static/Abas_extras/Saiba_mais/Saiba_mais.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <script src="../../static/Abas_extras/Saiba_mais/Saiba_mais.js" defer></script>
+  </head>
+  <body>
+    <header id="Cabeçalho">
+      <svg
+        id="BotaoMenu"
+        xmlns="http://www.w3.org/2000/svg"
+        height="24px"
+        viewBox="0 -960 960 960"
+        width="24px"
+        fill="#1f1f1f"
+      >
+        <path
+          d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"
+        />
+      </svg>
+      <h1 id="CabeçalhoTitulo">MENU</h1>
+    </header>
+
+    <div id="Barra_lateral">
+      <svg
+        id="Barra_lateral_voltar"
+        xmlns="http://www.w3.org/2000/svg"
+        height="24px"
+        viewBox="0 -960 960 960"
+        width="24px"
+        fill="#1f1f1f"
+      >
+        <path
+          d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
+        />
+      </svg>
+      <nav>
+        <ul id="Barra_lateral_lista">
+          <li>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="#1f1f1f"
+            >
+              <path
+                d="M513.5-254.5Q528-269 528-290t-14.5-35.5Q499-340 478-340t-35.5 14.5Q428-311 428-290t14.5 35.5Q457-240 478-240t35.5-14.5ZM442-394h74q0-33 7.5-52t42.5-52q26-26 41-49.5t15-56.5q0-56-41-86t-97-30q-57 0-92.5 30T342-618l66 26q5-18 22.5-39t53.5-21q32 0 48 17.5t16 38.5q0 20-12 37.5T506-526q-44 39-54 59t-10 73Zm38 314q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
+              />
+            </svg>
+            <a href="/sobre-nos">Sobre Nós</a>
+          </li>
+          <li>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="#1f1f1f"
+            >
+              <path
+                d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"
+              />
+            </svg>
+            <a href="/cadastro">Cadastrar-se</a>
+          </li>
+          <li>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="#1f1f1f"
+            >
+              <path
+                d="M480-120v-80h280v-560H480v-80h280q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H480Zm-80-160-55-58 102-102H120v-80h327L345-622l55-58 200 200-200 200Z"
+              />
+            </svg>
+            {% if current_user.is_authenticated %}
+              <a href="{{ url_for('meu_historico') if current_user.is_paciente else url_for('interno') }}">Entrar</a>
+            {% else %}
+              <a href="{{ url_for('auth.login2') }}">Entrar</a>
+            {% endif %}
+          </li>
+          <li>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="#1f1f1f"
+            >
+              <path
+                d="M80-240v-480h80v480H80Zm560 0-57-56 144-144H240v-80h487L584-664l56-56 240 240-240 240Z"
+              />
+            </svg>
+            <a href="/">Início</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <div name="Container1" id="Container1">
+      <h1 id="TituloPrincipal">SÍNDROME DO X FRÁGIL</h1>
+      <p id="SubtituloPrincipal">Conheça a causa hereditária mais comum de deficiência intelectual</p>
+    </div>
+
+    <div id="Espaçamento"></div>
+
+    <div name="Container2" id="Container2">
+      <h1 id="TituloSecundario">O Que É a Síndrome do X Frágil?</h1>
+      <p id="TextoDeExplicacao">
+        A Síndrome do X Frágil (SXF) é uma condição genética causada por uma mutação no gene <em>FMR1</em>, localizado no cromossomo X. Essa mutação impede a produção adequada da proteína FMRP, essencial para o desenvolvimento e funcionamento das conexões nervosas do cérebro. É a causa hereditária mais frequente de deficiência intelectual e a causa genética mais comum do espectro autista.
+        <br><br>
+        A condição afeta principalmente pessoas do sexo masculino, que apresentam sintomas mais intensos. Pessoas do sexo feminino, por possuírem dois cromossomos X, geralmente são portadoras com sintomas mais leves. Estima-se que 1 em cada 4.000 homens e 1 em cada 8.000 mulheres sejam afetados pela síndrome no mundo.
+      </p>
+    </div>
+
+    <div name="Container3" id="Container3">
+      <h1 id="TituloSecundario">Sintomas e Diagnóstico</h1>
+      <p id="TextoDeExplicacao">
+        Os sinais da Síndrome do X Frágil incluem atraso no desenvolvimento da fala e da linguagem, dificuldades de aprendizagem, déficit de atenção e hiperatividade (TDAH), ansiedade social e comportamentos repetitivos semelhantes ao autismo. Características físicas como orelhas proeminentes, rosto alongado e mandíbula projetada podem estar presentes, especialmente em meninos.
+        <br><br>
+        O diagnóstico é confirmado por meio de exame genético molecular, que identifica a expansão do trinucleotídeo CGG no gene <em>FMR1</em>. O diagnóstico precoce é fundamental para que a criança tenha acesso a intervenções terapêuticas — como fonoaudiologia, terapia ocupacional e acompanhamento psicológico — que fazem grande diferença no seu desenvolvimento e qualidade de vida.
+      </p>
+    </div>
+
+    <footer>
+      <p>
+        &copy; 2026 Projeto pra PUCPR. Todos os direitos reservados pra mim.
+      </p>
+    </footer>
+  </body>
+</html>
