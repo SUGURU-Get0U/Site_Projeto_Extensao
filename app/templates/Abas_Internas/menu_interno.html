@@ -165,7 +165,7 @@
         </div>
         <div id="atividade-lista">
           {% for av in ultimas %}
-          <div class="ativ-item" style="padding:8px 0;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;">
+          <div class="ativ-item" style="padding:11px 18px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;gap:12px;">
             <div>
               <strong>{{ av.paciente.nome_completo }}</strong>
               <span style="font-size:.8rem;color:#64748b;margin-left:8px;">
@@ -191,7 +191,7 @@
         </div>
         <div id="proximos-exames-lista">
           {% for av in ultimas %}
-          <div class="exame-item" style="padding:8px 0;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;">
+          <div class="exame-item" style="padding:11px 18px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;gap:12px;">
             <div>
               <strong>{{ av.paciente.nome_completo }}</strong>
               <span style="font-size:.8rem;color:#64748b;margin-left:8px;">{{ av.status | capitalize }}</span>

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block titulo %}Meu Histórico{% endblock %}
+
+{% block estilos %}
+<link rel="stylesheet" href="{{ url_for('static', filename='avaliacao/estilo_avaliacao.css') }}" />
+{% endblock %}
+
+{% block conteudo %}
+<main id="ConteudoAvaliacao">
+  <h1>Meu Histórico de Avaliações</h1>
+
+  {% if paciente %}
+    <p class="descricao">
+      {{ paciente.nome_completo }} &mdash; {{ paciente.genero_extenso }}
+      {% if paciente.idade %} &mdash; {{ paciente.idade }} anos{% endif %}
+    </p>
+  {% endif %}
+
+  {% with msgs = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in msgs %}
+      <div class="resumo {{ 'ok' if cat == 'ok' else 'alerta' }}">{{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  {% if not paciente %}
+    <p class="descricao">Seu perfil de paciente ainda não foi vinculado. Contate o administrador.</p>
+  {% elif not avaliacoes %}
+    <p class="descricao">Nenhuma avaliação registrada ainda.</p>
+  {% else %}
+    <table class="tabela-sintomas">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Data</th>
+          <th>Score</th>
+          <th>Resultado</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for av in avaliacoes %}
+        <tr>
+          <td class="cel-id">{{ av.id }}</td>
+          <td>{{ av.realizada_em.strftime('%d/%m/%Y') }}</td>
+          <td class="cel-score">{{ av.score }}</td>
+          <td>
+            {% if av.recomenda_teste %}
+              <span class="badge badge-alerta">Recomenda teste</span>
+            {% else %}
+              <span class="badge badge-ok">Sem indicação</span>
+            {% endif %}
+          </td>
+          <td class="cel-status">{{ av.status }}</td>
+          <td>
+            <a class="link-acao" href="{{ url_for('avaliacao_resultado', avaliacao_id=av.id) }}">
+              Ver detalhes
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+
+  <div class="rodape-info">
+    <a href="{{ url_for('auth.logout') }}">Sair do sistema</a>
+  </div>
+</main>
+{% endblock %}

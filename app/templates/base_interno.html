@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block titulo %}SXF Sistema{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='Abas_internas/menu_interno.css') }}" />
+    {% block estilos %}{% endblock %}
+    <style>
+      /* Sidebar interna */
+      #sidebar-interno {
+        position: fixed; top: 0; left: -260px; width: 260px; height: 100vh;
+        background: #1E3A8A; z-index: 200;
+        transition: left .25s ease;
+        display: flex; flex-direction: column; padding-top: 58px;
+        box-shadow: 4px 0 20px rgba(0,0,0,.3);
+      }
+      #sidebar-interno.aberto { left: 0; }
+      #sidebar-overlay {
+        display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4);
+        z-index: 199;
+      }
+      #sidebar-overlay.aberto { display: block; }
+      .sidebar-nav { padding: 12px 0; flex: 1; }
+      .sidebar-link {
+        display: flex; align-items: center; gap: 10px;
+        padding: 11px 20px; color: #CBD5E1; text-decoration: none;
+        font-size: .83rem; font-weight: 600;
+        transition: background .15s, color .15s;
+        fill: #CBD5E1;
+      }
+      .sidebar-link:hover, .sidebar-link.ativo {
+        background: rgba(255,255,255,.1); color: #fff; fill: #fff;
+      }
+      .sidebar-link svg { width: 18px; height: 18px; flex-shrink: 0; }
+      .sidebar-sep {
+        border: none; border-top: 1px solid rgba(255,255,255,.1);
+        margin: 6px 20px;
+      }
+      .sidebar-label {
+        font-size: .62rem; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 1.2px; color: rgba(203,213,225,.4);
+        padding: 10px 20px 4px;
+      }
+      /* Layout: header sticky (já ocupa espaço), conteúdo cresce, footer no fundo */
+      html { height: 100%; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      body > footer { margin-top: auto; }
+    </style>
+  </head>
+  <body>
+
+    <!-- CABEÇALHO INTERNO -->
+    <header id="cabecalho">
+      <div id="cabeçalho-esquerdo">
+        <button id="botao-menu" aria-label="Abrir menu">
+          <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+        </button>
+        <h1 id="titulo-sistema">
+          SXF Sistema
+          <span class="subtag">Síndrome do X Frágil</span>
+        </h1>
+      </div>
+      <div id="cabeçalho-direito">
+        <div id="usuario-cabecalho">
+          <div id="usuario-info">
+            <div id="usuario-nome">{{ current_user.nome_completo }}</div>
+            <div id="usuario-cargo">{{ current_user.role.nome | capitalize }}</div>
+          </div>
+          <div id="usuario-avatar">
+            <a href="{{ url_for('auth.logout') }}" title="Sair" style="color:inherit;text-decoration:none;">Sair</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- OVERLAY -->
+    <div id="sidebar-overlay"></div>
+
+    <!-- SIDEBAR INTERNA -->
+    <nav id="sidebar-interno">
+      <div class="sidebar-nav">
+        <span class="sidebar-label">Principal</span>
+        <a href="{{ url_for('interno') }}" class="sidebar-link">
+          <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          Dashboard
+        </a>
+        <a href="{{ url_for('pacientes_lista') }}" class="sidebar-link">
+          <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          Pacientes
+        </a>
+        <a href="{{ url_for('pacientes_novo') }}" class="sidebar-link">
+          <svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          Novo Paciente
+        </a>
+        <hr class="sidebar-sep" />
+        <span class="sidebar-label">Relatórios</span>
+        <a href="{{ url_for('relatorios.lista') }}" class="sidebar-link">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+          Laudos / Relatórios
+        </a>
+        {% if current_user.is_admin %}
+        <hr class="sidebar-sep" />
+        <span class="sidebar-label">Administração</span>
+        <a href="{{ url_for('admin.usuarios_lista') }}" class="sidebar-link">
+          <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+          Usuários
+        </a>
+        <a href="{{ url_for('admin.instituicoes_lista') }}" class="sidebar-link">
+          <svg viewBox="0 0 24 24"><path d="M12 7V3H2v18h20V7H12zm-2 12H4v-2h6v2zm0-4H4v-2h6v2zm0-4H4V9h6v2zm0-4H4V5h6v2zm10 12h-8V9h8v10zm-2-8h-4v2h4v-2zm0 4h-4v2h4v-2z"/></svg>
+          Instituições
+        </a>
+        {% endif %}
+        <hr class="sidebar-sep" />
+        <a href="{{ url_for('auth.logout') }}" class="sidebar-link">
+          <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+          Sair
+        </a>
+      </div>
+    </nav>
+
+    <!-- CONTEÚDO DA PÁGINA -->
+    {% block conteudo %}{% endblock %}
+
+    <footer>
+      <p>SXF Sistema &mdash; Síndrome do X Frágil &copy; 2026</p>
+    </footer>
+
+    <script>
+      const btnMenu = document.getElementById('botao-menu');
+      const sidebar = document.getElementById('sidebar-interno');
+      const overlay = document.getElementById('sidebar-overlay');
+      function abrirSidebar() { sidebar.classList.add('aberto'); overlay.classList.add('aberto'); }
+      function fecharSidebar() { sidebar.classList.remove('aberto'); overlay.classList.remove('aberto'); }
+      btnMenu.addEventListener('click', () => sidebar.classList.contains('aberto') ? fecharSidebar() : abrirSidebar());
+      overlay.addEventListener('click', fecharSidebar);
+    </script>
+  </body>
+</html>

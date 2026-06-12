@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Avaliação #{{ avaliacao.id }} — {{ avaliacao.paciente.nome_completo }}</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Lato', sans-serif; font-size: 13px; color: #111; padding: 24px; }
+
+    .cabecalho { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; border-bottom: 2px solid #1a4d6e; padding-bottom: 12px; }
+    .cabecalho h1 { font-size: 18px; color: #1a4d6e; }
+    .cabecalho p { font-size: 11px; color: #555; }
+
+    h2 { font-size: 14px; color: #1a4d6e; margin: 18px 0 8px; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; margin-bottom: 16px; }
+    .info-grid p strong { color: #1a4d6e; }
+
+    .resultado { padding: 12px 16px; border-radius: 6px; margin: 16px 0; }
+    .resultado.encaminhar { background: #fff4e5; border-left: 5px solid #e67e22; }
+    .resultado.negativo  { background: #e8f5e9; border-left: 5px solid #2e7d32; }
+    .resultado p { font-size: 13px; }
+    .resultado .score-line { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    th { background: #1a4d6e; color: #fff; padding: 6px 8px; text-align: left; font-size: 12px; }
+    td { padding: 5px 8px; border-bottom: 1px solid #ddd; font-size: 12px; }
+    tr.presente td { background: #f0f7ff; }
+
+    .assinatura { margin-top: 48px; border-top: 1px solid #999; padding-top: 8px; width: 260px; text-align: center; font-size: 11px; color: #555; }
+    .rodape { margin-top: 32px; font-size: 10px; color: #888; text-align: center; border-top: 1px solid #eee; padding-top: 8px; }
+
+    @media print {
+      body { padding: 0; }
+      .no-print { display: none !important; }
+      @page { margin: 1.5cm; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cabecalho">
+    <div>
+      <h1>Checklist de Triagem — Síndrome do X Frágil</h1>
+      <p>Instituto Buko Kaesemodel (IBK) — Sistema SXF Checklist</p>
+    </div>
+    <div style="text-align:right">
+      <p><strong>Avaliação #{{ avaliacao.id }}</strong></p>
+      <p>{{ avaliacao.realizada_em.strftime('%d/%m/%Y %H:%M') }}</p>
+    </div>
+  </div>
+
+  <h2>Dados do Paciente</h2>
+  <div class="info-grid">
+    <p><strong>Nome:</strong> {{ avaliacao.paciente.nome_completo }}</p>
+    <p><strong>Sexo:</strong> {{ avaliacao.paciente.genero_extenso }}</p>
+    <p><strong>Idade:</strong> {{ avaliacao.paciente.idade }} anos</p>
+    <p><strong>Data de nascimento:</strong> {{ avaliacao.paciente.data_nascimento.strftime('%d/%m/%Y') }}</p>
+    {% if avaliacao.paciente.nome_responsavel %}
+    <p><strong>Responsável:</strong> {{ avaliacao.paciente.nome_responsavel }}</p>
+    <p><strong>Telefone:</strong> {{ avaliacao.paciente.telefone_responsavel or '—' }}</p>
+    {% endif %}
+    {% if avaliacao.paciente.cpf %}
+    <p><strong>CPF:</strong> {{ avaliacao.paciente.cpf }}</p>
+    {% endif %}
+  </div>
+
+  <h2>Resultado da Triagem</h2>
+  <div class="resultado {{ 'encaminhar' if avaliacao.recomenda_teste else 'negativo' }}">
+    <p class="score-line">
+      Score: {{ "%.2f"|format(avaliacao.score|float) }}
+      &nbsp;/&nbsp;Limiar: {{ "%.2f"|format(avaliacao.limiar_aplicado|float) }}
+    </p>
+    {% if avaliacao.recomenda_teste %}
+      <p>⚠ Score igual ou acima do limiar. Recomenda-se encaminhamento para <strong>teste genético confirmatório</strong> (PCR / Southern Blotting).</p>
+    {% else %}
+      <p>Score abaixo do limiar. Não há indicação imediata de teste genético com base nos sintomas informados.</p>
+    {% endif %}
+  </div>
+
+  <h2>Detalhamento dos Sintomas</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Sintoma</th>
+        <th>Peso</th>
+        <th>Presente?</th>
+        <th>Contribuição</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for av_s in avaliacao.sintomas %}
+      <tr class="{{ 'presente' if av_s.presente else '' }}">
+        <td>{{ av_s.sintoma.nome }}</td>
+        <td>
+          {% if avaliacao.paciente.genero == 'M' %}
+            {{ "%.2f"|format(av_s.sintoma.peso_masculino|float) }}
+          {% else %}
+            {{ "%.2f"|format(av_s.sintoma.peso_feminino|float) }}
+          {% endif %}
+        </td>
+        <td>{{ "✓ Sim" if av_s.presente else "Não" }}</td>
+        <td>{{ "%.2f"|format(av_s.contribuicao|float) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if avaliacao.observacoes %}
+  <h2>Observações Clínicas</h2>
+  <p>{{ avaliacao.observacoes }}</p>
+  {% endif %}
+
+  <h2>Profissional Responsável</h2>
+  <p>{{ avaliacao.usuario.nome_completo if avaliacao.usuario else '—' }}</p>
+  <br>
+  <div class="assinatura">
+    <br><br>
+    ___________________________________<br>
+    Assinatura e Carimbo do Profissional
+  </div>
+
+  <div class="rodape">
+    Ferramenta de triagem populacional baseada em: Herai, R.H. &amp; Romero, L.M. — Coorte IBK 2018-2023 (419 indivíduos) |
+    AUC ≥ 0,70 | Sensibilidade ~95% | Limiares: M = 0,56 / F = 0,55<br>
+    Este documento não substitui avaliação clínica especializada.
+  </div>
+
+  <div class="no-print" style="margin-top:24px;text-align:center">
+    <button onclick="window.print()"
+      style="background:#1a4d6e;color:#fff;padding:10px 24px;border:none;border-radius:6px;font-size:1rem;cursor:pointer">
+      Imprimir / Salvar PDF
+    </button>
+    &nbsp;
+    <a href="{{ url_for('avaliacao_resultado', avaliacao_id=avaliacao.id) }}"
+       style="color:#1a4d6e">← Voltar</a>
+  </div>
+
+</body>
+</html>

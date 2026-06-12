@@ -1,0 +1,54 @@
+﻿{% extends "base.html" %}
+{% block titulo %}Pacientes{% endblock %}
+{% block estilos %}
+<link rel="stylesheet" href="{{ url_for('static', filename='avaliacao/estilo_avaliacao.css') }}" />
+{% endblock %}
+
+{% block conteudo %}
+<main id="ConteudoAvaliacao">
+  <h1>Pacientes Cadastrados</h1>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      <div class="resumo {{ 'ok' if cat == 'ok' else 'alerta' }}">{{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  <p>
+    <a class="btn-calcular" href="{{ url_for('pacientes_novo') }}">+ Novo paciente</a>
+  </p>
+
+  {% if pacientes %}
+  <table class="tabela-sintomas">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Sexo</th>
+        <th>Idade</th>
+        <th>Responsável</th>
+        <th>Avaliações</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in pacientes %}
+      <tr>
+        <td>{{ p.nome_completo }}</td>
+        <td>{{ p.genero_extenso }}</td>
+        <td>{{ p.idade }}</td>
+        <td>{{ p.nome_responsavel or '—' }}</td>
+        <td>{{ p.avaliacoes|length }}</td>
+        <td>
+          <a href="{{ url_for('paciente_detalhe', paciente_id=p.id) }}">Detalhes</a>
+          &nbsp;|&nbsp;
+          <a href="{{ url_for('avaliacao_form', paciente_id=p.id) }}">Nova avaliação</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p>Nenhum paciente cadastrado ainda.</p>
+  {% endif %}
+</main>
+{% endblock %}

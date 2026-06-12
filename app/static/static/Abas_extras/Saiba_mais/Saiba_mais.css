@@ -1,0 +1,214 @@
+:root {
+    --VerdePrincipal: #2A7FFF;
+    --VerdeSecundario: #1E3A8A;
+    --VerdeTerciario: #F3F4F6;
+    --BackGround1: #FFFFFF;
+    --BackGround2: rgb(219, 219, 219);
+    --Menu: #e0e0e0;
+    --Cinza: #959595;
+    --fonte_principal: 'Lato', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: var(--fonte_principal);
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--VerdeSecundario);
+}
+
+input, button, textarea, select {
+    font-family: var(--fonte_principal);
+}
+
+#Cabeçalho {
+    background-color: var(--VerdeSecundario);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 2%;
+    height: 7vh;
+    gap: 3%;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+#BotaoMenu {
+    width: 4vw;
+    height: 4vh;
+    border: none;
+    margin-left: 10px;
+    cursor: pointer;
+    fill: var(--Menu);
+    transition: opacity 0.2s;
+}
+
+#BotaoMenu:hover {
+    opacity: 0.75;
+}
+
+#CabeçalhoTitulo {
+    color: var(--Menu);
+    font-size: 4vh;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    letter-spacing: 0.08em;
+}
+
+#Barra_lateral {
+    position: fixed;
+    top: 0;
+    left: -30vh;
+    width: 20vh;
+    height: 100vh;
+    background: var(--Menu);
+    display: flex;
+    flex-direction: column;
+    padding-top: 1%;
+    transition: 0.3s;
+    border-right: var(--VerdePrincipal) solid 2px;
+    z-index: 200;
+}
+
+#Barra_lateral.Ativo {
+    left: 0;
+}
+
+#Barra_lateral_voltar {
+    width: 3vh;
+    height: 3vh;
+    border: none;
+    margin-top: 10%;
+    margin-bottom: 15%;
+    margin-left: 15%;
+    cursor: pointer;
+    fill: var(--VerdeSecundario);
+}
+
+#Barra_lateral li {
+    display: flex;
+    padding-bottom: 10%;
+    font-size: 1.6vh;
+    list-style: none;
+    padding-left: 30%;
+}
+
+#Barra_lateral li svg {
+    width: 2.4vh;
+    height: 2.4vh;
+    fill: var(--VerdeSecundario);
+}
+
+#Barra_lateral li a {
+    text-decoration: none;
+    padding-left: 5%;
+    color: var(--VerdeSecundario);
+}
+
+#Container1 {
+    background: linear-gradient(135deg, var(--VerdeSecundario) 0%, #163075 60%, #0f2259 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8vh 10vw 6vh;
+    min-height: 40vh;
+    position: relative;
+    overflow: hidden;
+}
+
+#Container1::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: var(--VerdePrincipal);
+}
+
+#TituloPrincipal {
+    color: #FFFFFF;
+    font-size: clamp(1.8rem, 4vw, 3.2rem);
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    margin-bottom: 1.5vh;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+
+#SubtituloPrincipal {
+    color: var(--Menu);
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    opacity: 0.9;
+}
+
+#Espaçamento {
+    height: 6vh;
+    background-color: var(--BackGround1);
+}
+
+#Container2,
+#Container3 {
+    background-color: var(--BackGround1);
+    padding: 5vh 10vw;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#Container2 {
+    border-bottom: 1px solid var(--BackGround2);
+}
+
+#Container3 {
+    background-color: var(--VerdeTerciario);
+}
+
+#TituloSecundario {
+    color: var(--VerdeSecundario);
+    font-size: clamp(1.3rem, 2.5vw, 2rem);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin-bottom: 2vh;
+    position: relative;
+    padding-bottom: 1.2vh;
+}
+
+#TituloSecundario::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background-color: var(--VerdePrincipal);
+    border-radius: 2px;
+}
+
+#TextoDeExplicacao {
+    color: #333333;
+    font-size: clamp(0.9rem, 1.4vw, 1.1rem);
+    font-weight: 400;
+    line-height: 1.8;
+    max-width: 800px;
+}
+
+footer {
+    background-color: var(--VerdeSecundario);
+    color: var(--Menu);
+    text-align: center;
+    padding: 3vh 0;
+    width: 100%;
+    font-size: 0.9rem;
+    letter-spacing: 0.03em;
+    opacity: 0.9;
+}

@@ -1,0 +1,85 @@
+﻿{% extends "base.html" %}
+
+{% block titulo %}Resultado da Triagem{% endblock %}
+
+{% block estilos %}
+<link rel="stylesheet" href="{{ url_for('static', filename='avaliacao/estilo_avaliacao.css') }}" />
+{% endblock %}
+
+{% block conteudo %}
+<main id="ConteudoResultado">
+  <h1>Resultado da Avaliação #{{ avaliacao.id }}</h1>
+
+  <p>
+    <a href="{{ url_for('paciente_detalhe', paciente_id=avaliacao.paciente.id) }}">
+      ← {{ avaliacao.paciente.nome_completo }}
+    </a>
+  </p>
+
+  <section class="resumo {{ 'alerta' if avaliacao.recomenda_teste else 'ok' }}">
+    <p><strong>Paciente:</strong> {{ avaliacao.paciente.nome_completo }}
+       ({{ avaliacao.paciente.genero_extenso }}, {{ avaliacao.paciente.idade }} anos)</p>
+    <p><strong>Realizada em:</strong> {{ avaliacao.realizada_em.strftime('%d/%m/%Y %H:%M') }}</p>
+    <p><strong>Score calculado:</strong> {{ "%.2f"|format(avaliacao.score|float) }}</p>
+    <p><strong>Limiar de corte:</strong> {{ "%.2f"|format(avaliacao.limiar_aplicado|float) }}</p>
+
+    {% if avaliacao.recomenda_teste %}
+      <p class="recomendacao">
+        ⚠️ Score igual ou acima do limiar. Recomenda-se encaminhamento para
+        <strong>teste genético confirmatório</strong> (PCR / Southern Blotting).
+      </p>
+    {% else %}
+      <p class="recomendacao">
+        Score abaixo do limiar de triagem. Não há indicação imediata de teste
+        genético com base nos sintomas informados.
+      </p>
+    {% endif %}
+  </section>
+
+  <h2>Detalhamento dos sintomas</h2>
+  <table class="tabela-sintomas">
+    <thead>
+      <tr>
+        <th>Sintoma</th>
+        <th>Peso aplicado</th>
+        <th>Presente?</th>
+        <th>Contribuição</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for av_s in avaliacao.sintomas %}
+      <tr>
+        <td>{{ av_s.sintoma.nome }}</td>
+        <td>
+          {% if avaliacao.paciente.genero == 'M' %}
+            {{ "%.2f"|format(av_s.sintoma.peso_masculino|float) }}
+          {% else %}
+            {{ "%.2f"|format(av_s.sintoma.peso_feminino|float) }}
+          {% endif %}
+        </td>
+        <td>{{ "✓" if av_s.presente else "" }}</td>
+        <td>{{ "%.2f"|format(av_s.contribuicao|float) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if avaliacao.observacoes %}
+    <h2>Observações</h2>
+    <p>{{ avaliacao.observacoes }}</p>
+  {% endif %}
+
+  <p>
+    <a class="btn-calcular" href="{{ url_for('avaliacao_form', paciente_id=avaliacao.paciente.id) }}">
+      Nova avaliação para este paciente
+    </a>
+    &nbsp;
+    <a href="{{ url_for('pacientes_lista') }}">Lista de pacientes</a>
+  </p>
+
+  <p class="rodape-info">
+    <em>Esta ferramenta é apenas de triagem populacional. O diagnóstico definitivo
+    requer avaliação clínica e confirmação por testes genéticos.</em>
+  </p>
+</main>
+{% endblock %}

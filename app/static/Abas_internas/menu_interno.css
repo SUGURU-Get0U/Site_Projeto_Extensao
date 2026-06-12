@@ -1,4 +1,4 @@
-/* Google Fonts já carregado via base.html — @import removido para evitar requisição dupla */
+/* Google Fonts carregado via <link> no menu_interno.html */
 
 /* ===================== VARIÁVEIS ===================== */
 :root {
@@ -407,12 +407,14 @@ body {
 /* ===================== ATIVIDADE RECENTE ===================== */
 #container-atividade {
     flex: 1.4;
+    min-width: 0;
     background: var(--bg-card);
     border: 1px solid var(--borda);
     border-radius: var(--radius);
     box-shadow: var(--sombra);
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 #atividade-header {
     padding: 16px 18px 12px;
@@ -454,12 +456,14 @@ body {
 /* ===================== PRÓXIMOS EXAMES ===================== */
 #container-proximos-exames {
     flex: 1;
+    min-width: 0;
     background: var(--bg-card);
     border: 1px solid var(--borda);
     border-radius: var(--radius);
     box-shadow: var(--sombra);
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 #proximos-exames-header {
     padding: 16px 18px 12px;

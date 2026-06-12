@@ -1,9 +1,11 @@
 import os
 import warnings
 from datetime import datetime
+from hashlib import sha256
 
 from cryptography.fernet import Fernet, InvalidToken
 from flask_login import UserMixin
+from sqlalchemy import CheckConstraint, event
 from sqlalchemy.types import Text, TypeDecorator
 
 from app.app import db
@@ -18,7 +20,7 @@ _fernet_instance = None
 def _get_fernet():
     global _fernet_instance
     if _fernet_instance is None:
-        key = os.environ.get("ENCRYPTION_KEY")
+        key = os.environ.get("ENCRYPTION_KEY") or os.environ.get("FLASK_SECRET_KEY")
         if not key:
             key = Fernet.generate_key().decode()
             warnings.warn(
@@ -56,9 +58,16 @@ class Instituicao(db.Model):
     __tablename__ = "instituicoes"
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(200), nullable=False)
+    cnpj = db.Column(db.String(18))
+    endereco = db.Column(db.String(255))
     cidade = db.Column(db.String(100))
+    estado = db.Column(db.String(2))
+    cep = db.Column(db.String(10))
+    telefone = db.Column(db.String(20))
+    email = db.Column(db.String(150))
     ativa = db.Column(db.Boolean, nullable=False, default=True)
     criado_em = db.Column(db.DateTime, default=datetime.utcnow)
+    atualizado_em = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def __repr__(self):
         return f"<Instituicao {self.nome}>"
@@ -90,6 +99,9 @@ class Usuario(UserMixin, db.Model):
     senha_hash = db.Column(db.String(255), nullable=False)
     ativo = db.Column(db.Boolean, nullable=False, default=True)
     email_verificado = db.Column(db.Boolean, nullable=False, default=False)
+    token_verificacao = db.Column(db.String(100))
+    token_reset_senha = db.Column(db.String(100))
+    token_reset_expira = db.Column(db.DateTime)
     ultimo_login = db.Column(db.DateTime)
     tentativas_login = db.Column(db.Integer, nullable=False, default=0)
     bloqueado_ate = db.Column(db.DateTime)
@@ -138,6 +150,7 @@ class Paciente(db.Model):
     data_nascimento = db.Column(db.Date, nullable=False)
     genero = db.Column(db.String(1), nullable=False)
     cpf = db.Column(EncryptedString)                         # criptografado
+    cpf_hash = db.Column(db.String(64), nullable=True, index=True)
     nome_responsavel = db.Column(db.String(150))
     telefone_responsavel = db.Column(EncryptedString)        # criptografado
     email_responsavel = db.Column(EncryptedString)           # criptografado
@@ -147,12 +160,37 @@ class Paciente(db.Model):
     criado_em = db.Column(db.DateTime, default=datetime.utcnow)
     atualizado_em = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
+    __table_args__ = (
+        CheckConstraint("genero IN ('M', 'F')", name="chk_paciente_genero"),
+    )
+
     cadastrador = db.relationship("Usuario", foreign_keys=[cadastrado_por], lazy="joined")
     instituicao = db.relationship("Instituicao", foreign_keys=[instituicao_id], lazy="joined")
     avaliacoes = db.relationship(
         "Avaliacao", backref="paciente", lazy=True,
         order_by="Avaliacao.realizada_em.desc()"
     )
+
+    @staticmethod
+    def normalize_cpf(value):
+        if value is None:
+            return None
+        return "".join(ch for ch in value if ch.isdigit())
+
+    @staticmethod
+    def hash_cpf(value):
+        normalized = Paciente.normalize_cpf(value)
+        return sha256(normalized.encode("utf-8")).hexdigest() if normalized else None
+
+    @classmethod
+    def __declare_last__(cls):
+        @event.listens_for(cls, "before_insert")
+        def _set_cpf_hash_insert(mapper, connection, target):
+            target.cpf_hash = cls.hash_cpf(target.cpf)
+
+        @event.listens_for(cls, "before_update")
+        def _set_cpf_hash_update(mapper, connection, target):
+            target.cpf_hash = cls.hash_cpf(target.cpf)
 
     @property
     def idade(self):
@@ -195,10 +233,11 @@ class Avaliacao(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     paciente_id = db.Column(db.Integer, db.ForeignKey("pacientes.id"), nullable=False)
     usuario_id = db.Column(db.Integer, db.ForeignKey("usuarios.id"))
+    instituicao_id = db.Column(db.Integer, db.ForeignKey("instituicoes.id"), nullable=True)
     score = db.Column(db.Numeric(6, 4), nullable=False, default=0)
     limiar_aplicado = db.Column(db.Numeric(5, 4), nullable=False)
     recomenda_teste = db.Column(db.Boolean, nullable=False, default=False)
-    status = db.Column(db.String(20), nullable=False, default="finalizada")
+    status = db.Column(db.String(20), nullable=False, default="rascunho")
     observacoes = db.Column(db.Text)
     realizada_em = db.Column(db.DateTime, default=datetime.utcnow)
     finalizada_em = db.Column(db.DateTime)
@@ -206,6 +245,7 @@ class Avaliacao(db.Model):
     atualizado_em = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     usuario = db.relationship("Usuario", lazy="joined")
+    instituicao = db.relationship("Instituicao", foreign_keys=[instituicao_id], lazy="joined")
     sintomas = db.relationship(
         "AvaliacaoSintoma", backref="avaliacao", lazy=True,
         cascade="all, delete-orphan",
