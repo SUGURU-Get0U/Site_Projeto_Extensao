@@ -30,10 +30,6 @@ COPY pyproject.toml poetry.lock* ./
 # Como o container já é um ambiente isolado, não precisamos de venv interna.
 RUN poetry config virtualenvs.create false
 
-<<<<<<< HEAD
-COPY pyproject.toml ./
-=======
->>>>>>> 666dea0a447a8f8ca1a36fd7a61ff251a05f9a52
 
 #Instala as dependências listadas no pyproject.toml
 RUN poetry install --no-root --no-interaction --no-ansi

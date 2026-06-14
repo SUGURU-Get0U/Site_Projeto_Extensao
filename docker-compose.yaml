@@ -1,21 +1,6 @@
 services:
   db:
     image: mysql:8.0
-<<<<<<< HEAD
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: sxf_root_2026
-      MYSQL_DATABASE: sxf_checklist
-      MYSQL_USER: sxf_user
-      MYSQL_PASSWORD: sxf_pass_2026
-    ports:
-      - "3306:3306"
-    volumes:
-      - sxf_db_data:/var/lib/mysql
-      - ../sxf_checklist.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-psxf_root_2026"]
-=======
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root_password_here
@@ -31,8 +16,16 @@ services:
       - ./sxf_checklist.sql:/docker-entrypoint-initdb.d/init.sql:ro
     healthcheck:
       # Adapted to use the root password from this block
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot_password_here"]
->>>>>>> 666dea0a447a8f8ca1a36fd7a61ff251a05f9a52
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-uroot",
+          "-proot_password_here",
+        ]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -45,17 +38,6 @@ services:
       - .:/app
     working_dir: /app
     environment:
-<<<<<<< HEAD
-      FLASK_ENV: development
-      DATABASE_URL: mysql+pymysql://sxf_user:sxf_pass_2026@db:3306/sxf_checklist
-    depends_on:
-      db:
-        condition: service_healthy
-    command: flask --app app.app run --host=0.0.0.0 --debug
-
-volumes:
-  sxf_db_data:
-=======
       - FLASK_ENV=development
       # Connects to 'db' using the buko credentials on port 3306
       - DATABASE_URL=mysql+pymysql://buko_admin:buko_password@db:3306/sxf_checklist
@@ -66,4 +48,3 @@ volumes:
 
 volumes:
   mysql_data:
->>>>>>> 666dea0a447a8f8ca1a36fd7a61ff251a05f9a52

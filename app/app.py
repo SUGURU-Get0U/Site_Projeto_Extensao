@@ -82,10 +82,12 @@ from app import cli  # noqa: E402,F401
 from app.auth import auth_bp  # noqa: E402
 from app.admin import admin_bp  # noqa: E402
 from app.relatorios import relatorios_bp  # noqa: E402
+from app.backup import backup_bp  # noqa: E402,F401
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(relatorios_bp)
+app.register_blueprint(backup_bp)
 
 with app.app_context():
     _bootstrap_db()

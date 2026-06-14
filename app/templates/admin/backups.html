@@ -1,0 +1,157 @@
+{% extends "base_interno.html" %}
+{% block titulo %}Backups do Banco de Dados — Admin{% endblock %}
+{% block estilos %}
+<link rel="stylesheet" href="{{ url_for('static', filename='admin/backup.css') }}" />
+{% endblock %}
+
+{% block conteudo %}
+<div id="backup-main">
+
+  {# ── Cabeçalho ── #}
+  <div class="backup-header">
+    <h1>
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+      Backups do Banco de Dados
+    </h1>
+    <div class="backup-header-actions">
+      <form method="post" action="{{ url_for('backup.create') }}" style="margin:0">
+        <button class="btn-backup btn-primary" type="submit" id="btn-criar-backup">
+          <svg viewBox="0 0 24 24"><path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2v9.67z"/></svg>
+          Criar Backup Agora
+        </button>
+      </form>
+      <a href="{{ url_for('backup.download_log') }}" class="btn-backup btn-secondary" id="btn-download-log">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+        Ver Log
+      </a>
+      <a href="{{ url_for('admin.usuarios_lista') }}" class="backup-back">
+        ← Voltar
+      </a>
+    </div>
+  </div>
+
+  {# ── Mensagens flash ── #}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      <div class="backup-flash {{ cat }}">
+        {% if cat == 'ok' %}
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#2e7d32;flex-shrink:0"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        {% else %}
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#c62828;flex-shrink:0"><path d="M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg>
+        {% endif %}
+        {{ msg }}
+      </div>
+    {% endfor %}
+  {% endwith %}
+
+  {# ── Cards de estatísticas ── #}
+  {% set total_backups = backups | length %}
+  {% set total_bytes = backups | sum(attribute='size') %}
+  <div class="backup-stats">
+    <div class="stat-card">
+      <div class="stat-value">{{ total_backups }}</div>
+      <div class="stat-label">Backups</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">{{ (total_bytes / 1024 / 1024) | round(1) }} MB</div>
+      <div class="stat-label">Tamanho Total</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">
+        {% if backups %}{{ backups[0].mtime.strftime('%d/%m') }}{% else %}—{% endif %}
+      </div>
+      <div class="stat-label">Último Backup</div>
+    </div>
+  </div>
+
+  {# ── Tabela de backups ── #}
+  <div class="backup-card">
+    <div class="backup-card-title">Arquivos de Backup Disponíveis</div>
+
+    {% if backups %}
+    <table class="backup-table">
+      <thead>
+        <tr>
+          <th>Arquivo</th>
+          <th>Data / Hora</th>
+          <th style="text-align:right">Tamanho</th>
+          <th style="text-align:right">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in backups %}
+        <tr>
+          <td class="col-nome">{{ b.name }}</td>
+          <td class="col-data">{{ b.mtime.strftime('%d/%m/%Y %H:%M:%S') }}</td>
+          <td class="col-tamanho">
+            {% if b.size >= 1048576 %}
+              {{ (b.size / 1048576) | round(2) }} MB
+            {% elif b.size >= 1024 %}
+              {{ (b.size / 1024) | round(1) }} KB
+            {% else %}
+              {{ b.size }} B
+            {% endif %}
+          </td>
+          <td class="col-acoes">
+            <a href="{{ url_for('backup.download', filename=b.name) }}"
+               class="btn-backup btn-link"
+               id="btn-download-{{ loop.index }}">
+              <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+              Download
+            </a>
+            {% if current_user.is_admin_master %}
+            <form method="post" action="{{ url_for('backup.restore') }}"
+                  class="restore-form"
+                  onsubmit="return confirmarRestore(this)"
+                  id="form-restore-{{ loop.index }}">
+              <input type="hidden" name="filename" value="{{ b.name }}" />
+              <input type="text" name="confirm"
+                     placeholder="Digite CONFIRMAR"
+                     id="confirm-{{ loop.index }}"
+                     autocomplete="off" />
+              <button type="submit" class="btn-backup btn-danger" id="btn-restore-{{ loop.index }}">
+                <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+                Restaurar
+              </button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="backup-empty">
+      <svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.36C18 2.54 15.46 0 12.36 0c-1.73 0-3.27.93-4.11 2.29L7 3 5.73 1.73C5.29 1.28 4.71 1 4.08 1 2.82 1 1.83 2 1.83 3.25c0 .59.24 1.13.63 1.52L3 6H2C.9 6 0 6.9 0 8v12c0 1.1.9 2 2 2h20c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM7.17 3.76c.34-.59.97-1 1.69-1C10 2.76 11 3.76 11 5s-1 2.24-2.14 2.24c-.72 0-1.35-.41-1.69-1L5.63 4.71l1.54-1.54.34.59z"/></svg>
+      <p>Nenhum backup encontrado.<br>Clique em <strong>Criar Backup Agora</strong> para gerar o primeiro.</p>
+    </div>
+    {% endif %}
+  </div>
+
+  {# ── Nota de segurança ── #}
+  <div class="backup-note">
+    <svg viewBox="0 0 24 24"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm-1 13l-3-3 1.41-1.41L11 12.17l4.59-4.58L17 9l-6 6z"/></svg>
+    <span>
+      A <strong>restauração</strong> só está disponível para o <strong>Administrador Master</strong>.
+      Digite <strong>CONFIRMAR</strong> no campo ao lado do backup desejado e clique em Restaurar.
+      O estado atual do banco será <strong>substituído</strong> pelos dados do backup selecionado.
+    </span>
+  </div>
+
+</div>
+
+<script>
+function confirmarRestore(form) {
+  var v = (form.confirm.value || '').trim().toUpperCase();
+  if (v !== 'CONFIRMAR') {
+    alert('Para restaurar, você deve digitar exatamente CONFIRMAR no campo de confirmação.');
+    return false;
+  }
+  return confirm(
+    'ATENÇÃO: Restaurar o backup "' + form.filename.value + '" vai substituir todos os dados atuais do banco.\n\n' +
+    'Esta ação não pode ser desfeita.\n\nDeseja continuar?'
+  );
+}
+</script>
+
+{% endblock %}
